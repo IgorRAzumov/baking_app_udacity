@@ -7,11 +7,14 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import butterknife.BindView;
 import udacity.com.baking_app.R;
 import udacity.com.baking_app.adapters.RecipeDetailPageAdapter;
+import udacity.com.baking_app.data.Ingredient;
 import udacity.com.baking_app.data.Recipe;
 import udacity.com.baking_app.data.Step;
 
@@ -23,7 +26,7 @@ public class RecipeDetailFragment extends BaseFragment {
     ViewPager recipeViewPager;
 
     private int viewPagerPosition;
-
+    private int ingredientsFragmentPosition;
     private RecipeDetailPageAdapter recipeDetailAdapter;
 
 
@@ -50,12 +53,12 @@ public class RecipeDetailFragment extends BaseFragment {
         if (context != null) {
             Recipe recipe = Objects.requireNonNull(recipeDetailBundle)
                     .getParcelable(getString(R.string.recipe_key));
-            recipeDetailAdapter = new RecipeDetailPageAdapter(context, getFragmentManager(),
-                    Objects.requireNonNull(recipe));
-            viewPagerPosition = recipeDetailBundle.getInt(getString(R.string.recipe_detail_item_key));
+            recipeDetailAdapter = new RecipeDetailPageAdapter(createRecipeDetailFragments(recipe),
+                    getFragmentManager());
+            viewPagerPosition = recipeDetailBundle
+                    .getInt(getString(R.string.recipe_detail_item_key));
         }
     }
-
 
     @Override
     protected int getFragmentLayout() {
@@ -75,8 +78,7 @@ public class RecipeDetailFragment extends BaseFragment {
         recipeViewPager.setAdapter(recipeDetailAdapter);
         recipeViewPager.setCurrentItem(viewPagerPosition, false);
         recipeViewPager.addOnPageChangeListener(createViewPagerListener());
-
-        //recipeViewPager.setOffscreenPageLimit(recipeDetailAdapter.getCount());
+        recipeViewPager.setOffscreenPageLimit(3);
     }
 
     @NonNull
@@ -84,21 +86,20 @@ public class RecipeDetailFragment extends BaseFragment {
         return new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                if (position != RecipeDetailPageAdapter.INGREDIENTS_POSITION) {
-                    ((RecipeStepFragment) recipeDetailAdapter.getItem(viewPagerPosition))
-                            .imHiddenNow();
-
-                }
-
-                viewPagerPosition = position;
             }
 
             @Override
             public void onPageSelected(int position) {
-                if (position != RecipeDetailPageAdapter.INGREDIENTS_POSITION) {
+                if (position != ingredientsFragmentPosition) {
                     ((RecipeStepFragment) recipeDetailAdapter.getItem(position))
                             .imVisibleNow();
                 }
+
+                if (viewPagerPosition != ingredientsFragmentPosition) {
+                    ((RecipeStepFragment) recipeDetailAdapter.getItem(viewPagerPosition))
+                            .imHiddenNow();
+                }
+
                 viewPagerPosition = position;
             }
 
@@ -111,6 +112,37 @@ public class RecipeDetailFragment extends BaseFragment {
 
 
     public void showStepInfo(Step step) {
+
+    }
+
+
+    private ArrayList<Fragment> createRecipeDetailFragments(Recipe recipe) {
+        ArrayList<Fragment> fragments = new ArrayList<>();
+        Bundle bundle = new Bundle();
+
+        Fragment fragment = createIngredientsFragment(bundle, recipe.getIngredients());
+        fragments.add(fragment);
+        ingredientsFragmentPosition = fragments.indexOf(fragment);
+
+        for (Step step : recipe.getSteps()) {
+            fragments.add(createStepFragment(step));
+        }
+        return fragments;
+    }
+
+    private RecipeStepFragment createStepFragment(Step step) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(getString(R.string.step_key), step);
+        return RecipeStepFragment.newInstance(bundle);
+    }
+
+    private IngredientsFragment createIngredientsFragment(Bundle bundle,
+                                                          List<Ingredient> ingredients) {
+
+        bundle.putParcelableArrayList(getString(R.string.ingredients_key)
+                , new ArrayList<>(ingredients));
+        return IngredientsFragment.newInstance(bundle);
+
 
     }
 }

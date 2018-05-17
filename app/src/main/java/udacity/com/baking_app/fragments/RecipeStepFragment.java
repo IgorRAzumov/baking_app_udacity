@@ -118,7 +118,6 @@ public class RecipeStepFragment extends BaseFragment {
 
     }
 
-
     @Override
     public void onStart() {
         super.onStart();
