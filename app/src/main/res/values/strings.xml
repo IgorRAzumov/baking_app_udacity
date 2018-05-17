@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">baking app</string>
+    <string name="title_item_detail">Baking Detail</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="bundle_fragment_params_key">bundle-fragment-params-key</string>
+    <string name="recipes_list_toolbar_text">Baking Time</string>
+    <string name="error_implements_fragment_interaction_listener">must implement OnFragmentInteractionListener</string>
+    <string name="error_load_recipes">Error load data. Check Network and Try again.</string>
+    <string name="error_empty_data">No Recipes Loaded.Try again</string>
+    <string name="recipe_key">recipe-key</string>
+    <string name="steps_list_key">steps-list-key</string>
+    <string name="error_inbox_bundle_date">error inbox bundle date</string>
+    <string name="recipe_step_key">recipe-step-key</string>
+    <string name="ingredients">Ingredients</string>
+    <string name="ingredients_key">ingredients-key</string>
+    <string name="step_key">step-key</string>
+    <string name="fragment_recipe_step_navigate_hlp_text">Swiping to the left or right shows the previous or next page</string>
+    <string name="padding_new_text">/t</string>
+    <string name="recipe_detail_item_key">step-position-key</string>
+</resources>
