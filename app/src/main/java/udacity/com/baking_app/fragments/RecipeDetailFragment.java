@@ -19,7 +19,8 @@ import udacity.com.baking_app.data.Recipe;
 import udacity.com.baking_app.data.Step;
 
 
-public class RecipeDetailFragment extends BaseFragment {
+public class RecipeDetailFragment extends BaseFragment
+        implements RecipeStepFragment.OnFragmentInteractionListener {
     public static final String TAG = RecipeDetailFragment.class.getCanonicalName();
 
     @BindView(R.id.vp_fragment_recipe_detail)
@@ -28,6 +29,7 @@ public class RecipeDetailFragment extends BaseFragment {
     private int viewPagerPosition;
     private int ingredientsFragmentPosition;
     private RecipeDetailPageAdapter recipeDetailAdapter;
+    private OnFragmentInteractionListener fragmentInteractionListener;
 
 
     public static Fragment newInstance(@NonNull Bundle bundle) {
@@ -39,6 +41,17 @@ public class RecipeDetailFragment extends BaseFragment {
     }
 
     public RecipeDetailFragment() {
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnFragmentInteractionListener) {
+            fragmentInteractionListener = (OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + getString(R.string.error_implements_fragment_interaction_listener));
+        }
     }
 
     @Override
@@ -70,6 +83,23 @@ public class RecipeDetailFragment extends BaseFragment {
         initViewPager();
     }
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        fragmentInteractionListener = null;
+    }
+
+    @Override
+    public void showFullScreenMode() {
+        fragmentInteractionListener.showFullScreenMode();
+    }
+
+    @Override
+    public void showDefaultMode() {
+        fragmentInteractionListener.showDefaultMode();
+    }
+
+
     private void initViewPager() {
         FragmentActivity fragmentActivity = getActivity();
         if (fragmentActivity == null) {
@@ -80,6 +110,7 @@ public class RecipeDetailFragment extends BaseFragment {
         recipeViewPager.addOnPageChangeListener(createViewPagerListener());
         recipeViewPager.setOffscreenPageLimit(3);
     }
+
 
     @NonNull
     private ViewPager.OnPageChangeListener createViewPagerListener() {
@@ -144,5 +175,12 @@ public class RecipeDetailFragment extends BaseFragment {
         return IngredientsFragment.newInstance(bundle);
 
 
+    }
+
+
+    public interface OnFragmentInteractionListener {
+        void showFullScreenMode();
+
+        void showDefaultMode();
     }
 }

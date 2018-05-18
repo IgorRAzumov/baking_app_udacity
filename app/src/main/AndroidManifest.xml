@@ -22,6 +22,7 @@
 
         <activity
             android:name=".activities.RecipeDetailActivity"
+            android:configChanges="orientation|screenSize"
             android:parentActivityName=".activities.RecipeActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -34,6 +35,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>

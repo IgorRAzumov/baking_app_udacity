@@ -61,9 +61,9 @@ public class RecipeActivity extends AppCompatActivity
     @Override
     public void onStepClick(Recipe recipe, int selectedStepPosition) {
         if (mTwoPane) {
-          //  showStepDetail();
+            //  showStepDetail();
         } else {
-            startRecipeDetailActivity(recipe,selectedStepPosition);
+            startRecipeDetailActivity(recipe, selectedStepPosition);
         }
     }
 

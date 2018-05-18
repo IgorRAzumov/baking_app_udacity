@@ -1,11 +1,17 @@
 package udacity.com.baking_app.fragments;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.text.TextUtils;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.exoplayer2.DefaultLoadControl;
@@ -15,6 +21,7 @@ import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
@@ -32,8 +39,15 @@ public class RecipeStepFragment extends BaseFragment {
     TextView stepDescriptionText;
     @BindView(R.id.plv_fragment_recipe_step_player_view)
     PlayerView playerView;
+    @BindView(R.id.iv_fragment_recipe_step_default_image)
+    ImageView defaultImageView;
+    @BindView(R.id.cv_fragment_recipe_step_content)
+    CardView descriptionCard;
+    @BindView(R.id.tv_fragment_recipe_step_nav_help)
+    TextView navigationHelpText;
 
     private SimpleExoPlayer player;
+    private OnFragmentInteractionListener fragmentInteractionListener;
     private Step step;
 
 
@@ -49,10 +63,25 @@ public class RecipeStepFragment extends BaseFragment {
         return fragment;
     }
 
+    private void onAttachToParentFragment() {
+        for (Fragment fragment : getFragmentManager().getFragments()) {
+            if (fragment instanceof RecipeStepFragment.OnFragmentInteractionListener) {
+                fragmentInteractionListener = (OnFragmentInteractionListener) fragment;
+                break;
+            }
+        }
+
+        if (fragmentInteractionListener == null) {
+            throw new RuntimeException(getString(
+                    R.string.error_implements_fragment_interaction_listener));
+        }
+    }
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+onAttachToParentFragment();
         Bundle stepBundle = Objects
                 .requireNonNull(getArguments()).getBundle(BUNDLE_FRAGMENT_PARAMS_KEY);
         step = Objects.requireNonNull(stepBundle).getParcelable(getString(R.string.step_key));
@@ -67,55 +96,6 @@ public class RecipeStepFragment extends BaseFragment {
     @Override
     protected void initUi() {
         stepDescriptionText.setText(step.getDescription());
-    }
-
-
-    private void checkVideoData() {
-        String mediaUri = step.getVideoURL();
-        if (mediaUri == null || TextUtils.isEmpty(mediaUri)) {
-            showDefaultImage();
-        } else {
-            initPlayer(mediaUri);
-        }
-
-    }
-
-    private void initPlayer(String mediaUri) {
-        String thumbnailUrl = step.getThumbnailURL();
-        if (thumbnailUrl == null || TextUtils.isEmpty(thumbnailUrl)) {
-            playerView.setDefaultArtwork(BitmapFactory.decodeResource(getResources(),
-                    R.drawable.generic));
-        } else {
-            loadThumbnail(thumbnailUrl);
-        }
-
-        Context context = getContext();
-        if (player == null && context != null) {
-            player = ExoPlayerFactory.newSimpleInstance(
-                    new DefaultRenderersFactory(context),
-                    new DefaultTrackSelector(),
-                    new DefaultLoadControl());
-
-            playerView.setPlayer(player);
-            player.setPlayWhenReady(false);
-
-            DataSource.Factory dataSource =
-                    new DefaultHttpDataSourceFactory(
-                            Util.getUserAgent(context, getString(R.string.app_name)));
-
-            MediaSource videoSource = new ExtractorMediaSource.Factory(dataSource)
-                    .createMediaSource(Uri.parse(mediaUri));
-
-            player.prepare(videoSource);
-
-        }
-    }
-
-    private void showDefaultImage() {
-    }
-
-    private void loadThumbnail(String thumbnailUrl) {
-
     }
 
     @Override
@@ -150,6 +130,55 @@ public class RecipeStepFragment extends BaseFragment {
         }
     }
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        fragmentInteractionListener = null;
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        String videoUrl = step.getVideoURL();
+        if (videoUrl == null || TextUtils.isEmpty(videoUrl)) {
+            return;
+        }
+
+        Configuration configuration = getResources().getConfiguration();
+        if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            fragmentInteractionListener.showFullScreenMode();
+            changePlayerScreenMode(ViewGroup.LayoutParams.MATCH_PARENT);
+        } else {
+            fragmentInteractionListener.showDefaultMode();
+            changePlayerScreenMode(0);
+        }
+    }
+
+    private void changePlayerScreenMode(int matchParent) {
+        if (matchParent == ViewGroup.LayoutParams.MATCH_PARENT) {
+            descriptionCard.setVisibility(View.GONE);
+            navigationHelpText.setVisibility(View.GONE);
+        } else {
+            descriptionCard.setVisibility(View.VISIBLE);
+            navigationHelpText.setVisibility(View.VISIBLE);
+        }
+
+
+        ViewGroup.LayoutParams params = playerView.getLayoutParams();
+        params.width = matchParent;
+        params.height = matchParent;
+        playerView.setLayoutParams(params);
+    }
+
+    private void showDefaultImage() {
+        playerView.setVisibility(View.GONE);
+        defaultImageView.setVisibility(View.VISIBLE);
+    }
+
+    private void loadThumbnail(String thumbnailUrl) {
+
+    }
+
     public void imVisibleNow() {
         if (step != null) {
             checkVideoData();
@@ -157,7 +186,7 @@ public class RecipeStepFragment extends BaseFragment {
     }
 
     public void imHiddenNow() {
-        if (player != null ) {
+        if (player != null) {
             releasePlayer();
         }
     }
@@ -167,6 +196,55 @@ public class RecipeStepFragment extends BaseFragment {
         player.release();
         player = null;
         playerView.setPlayer(null);
+    }
+
+
+    private void checkVideoData() {
+        String mediaUri = step.getVideoURL();
+        if (mediaUri == null || TextUtils.isEmpty(mediaUri)) {
+            showDefaultImage();
+        } else {
+            initPlayer(mediaUri);
+        }
+
+    }
+
+    private void initPlayer(String mediaUri) {
+        String thumbnailUrl = step.getThumbnailURL();
+        if (thumbnailUrl == null || TextUtils.isEmpty(thumbnailUrl)) {
+            playerView.setDefaultArtwork(BitmapFactory.decodeResource(getResources(),
+                    R.drawable.generic));
+        } else {
+            loadThumbnail(thumbnailUrl);
+        }
+
+        Context context = getContext();
+        if (player == null && context != null) {
+            player = ExoPlayerFactory.newSimpleInstance(
+                    new DefaultRenderersFactory(context),
+                    new DefaultTrackSelector(),
+                    new DefaultLoadControl());
+
+            playerView.setPlayer(player);
+            playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
+            player.setPlayWhenReady(false);
+
+            DataSource.Factory dataSource =
+                    new DefaultHttpDataSourceFactory(
+                            Util.getUserAgent(context, getString(R.string.app_name)));
+
+            MediaSource videoSource = new ExtractorMediaSource.Factory(dataSource)
+                    .createMediaSource(Uri.parse(mediaUri));
+
+            player.prepare(videoSource);
+
+        }
+    }
+
+    public interface OnFragmentInteractionListener {
+        void showFullScreenMode();
+
+        void showDefaultMode();
     }
 
 
