@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <integer name="recipes_fragment_rv_item_decorator_spacing">5</integer>
+    <integer name="no_saved_position">-1</integer>
+    <integer name="list_recipes_landscape_span_count">2</integer>
+    <integer name="list_recipes_portrait_span_coun">1</integer>
+    <integer name="default_recipe_detail_position">0</integer>
 </resources>
