@@ -1,6 +1,7 @@
 package udacity.com.baking_app.fragments;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -22,6 +23,7 @@ import udacity.com.baking_app.R;
 import udacity.com.baking_app.adapters.RecipesListAdapter;
 import udacity.com.baking_app.asyncTasksLoaders.RecipesLoader;
 import udacity.com.baking_app.data.Recipe;
+import udacity.com.baking_app.utils.Utils;
 import udacity.com.baking_app.widgets.SpacingItemDecorator;
 
 
@@ -87,14 +89,17 @@ public class RecipesListFragment extends BaseFragment {
 
 
     private void initRecipesRecycler() {
-        int spanCount = 1;
+        Resources resources = getResources();
+        int spanCount = resources.getInteger(
+                resources.getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE
+                        ? R.integer.list_recipes_landscape_span_count
+                        : R.integer.list_recipes_portrait_span_coun);
+        int spacingPx = Utils.convertDpToPx(
+                resources.getDimension(R.dimen.recipes_fragment_rv_item_decorator_spacing),
+                resources.getDisplayMetrics().density);
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), spanCount);
         recipesRecycler.setLayoutManager(gridLayoutManager);
-
-        Resources resources = getResources();
-        int spacingPx = Math.round(resources.getDimension(R.dimen.recipes_fragment_rv_item_decorator_spacing) * resources.getDisplayMetrics().density);
-
         recipesRecycler.addItemDecoration(new SpacingItemDecorator(spanCount, spacingPx, true));
     }
 
@@ -126,14 +131,7 @@ public class RecipesListFragment extends BaseFragment {
 
     private void completeDataLoad(List<Recipe> data) {
         progressBar.setVisibility(View.GONE);
-        RecipesListAdapter recipesListAdapter = new RecipesListAdapter(data, new RecipesListAdapter.RecyclerViewCallback() {
-            @Override
-            public void onRecipeClick(Recipe recipe) {
-                fragmentInteractionListener.onRecipeClick(recipe);
-            }
-        });
-
-        recipesRecycler.setAdapter(recipesListAdapter);
+        recipesRecycler.setAdapter(createRecipesListAdapter(data));
     }
 
 
@@ -144,11 +142,18 @@ public class RecipesListFragment extends BaseFragment {
         }
     }
 
-
-    public interface OnFragmentInteractionListener {
-
-        void onRecipeClick(Recipe recipe);
+    @NonNull
+    private RecipesListAdapter createRecipesListAdapter(List<Recipe> data) {
+        return new RecipesListAdapter(data,
+                new RecipesListAdapter.RecyclerViewCallback() {
+                    @Override
+                    public void onRecipeClick(Recipe recipe) {
+                        fragmentInteractionListener.onRecipeClick(recipe);
+                    }
+                });
     }
 
-
+    public interface OnFragmentInteractionListener {
+        void onRecipeClick(Recipe recipe);
+    }
 }

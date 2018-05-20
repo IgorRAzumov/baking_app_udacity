@@ -2,10 +2,14 @@ package udacity.com.baking_app.adapters;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -46,11 +50,23 @@ public class RecipesListAdapter extends RecyclerView.Adapter<RecipesListAdapter.
         holder.recipeName.setText(recipe.getName());
         holder.itemView.setTag(recipe);
         holder.itemView.setOnClickListener(itemClickListener);
+        String imageUrl = recipe.getImage();
+
+        if (imageUrl != null && !TextUtils.isEmpty(imageUrl)) {
+            loadImage(imageUrl, holder.recipeImage);
+        }
     }
 
     @Override
     public int getItemCount() {
         return recipesList == null ? 0 : recipesList.size();
+    }
+
+    private void loadImage(String imageUrl, ImageView recipeImage) {
+        Picasso
+                .with(recipeImage.getContext())
+                .load(imageUrl)
+                .into(recipeImage);
     }
 
     public interface RecyclerViewCallback {
@@ -60,6 +76,8 @@ public class RecipesListAdapter extends RecyclerView.Adapter<RecipesListAdapter.
     class RecipesViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.tv_recipe_card_recipe_title)
         TextView recipeName;
+        @BindView(R.id.iv_recipe_card_recipe_title)
+        ImageView recipeImage;
 
         RecipesViewHolder(View itemView) {
             super(itemView);

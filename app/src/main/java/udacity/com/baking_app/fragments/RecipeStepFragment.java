@@ -2,10 +2,12 @@ package udacity.com.baking_app.fragments;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
 import android.text.TextUtils;
@@ -49,7 +51,8 @@ public class RecipeStepFragment extends BaseFragment {
     private SimpleExoPlayer player;
     private OnFragmentInteractionListener fragmentInteractionListener;
     private Step step;
-
+    private long savedPlayerPosition;
+    private boolean playWhenReady;
 
     public RecipeStepFragment() {
 
@@ -64,11 +67,10 @@ public class RecipeStepFragment extends BaseFragment {
     }
 
     private void onAttachToParentFragment() {
-        for (Fragment fragment : getFragmentManager().getFragments()) {
-            if (fragment instanceof RecipeStepFragment.OnFragmentInteractionListener) {
-                fragmentInteractionListener = (OnFragmentInteractionListener) fragment;
-                break;
-            }
+        Fragment parentFragment = getParentFragment();
+        if (parentFragment instanceof OnFragmentInteractionListener) {
+            fragmentInteractionListener = (OnFragmentInteractionListener) parentFragment;
+
         }
 
         if (fragmentInteractionListener == null) {
@@ -81,7 +83,7 @@ public class RecipeStepFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-onAttachToParentFragment();
+        onAttachToParentFragment();
         Bundle stepBundle = Objects
                 .requireNonNull(getArguments()).getBundle(BUNDLE_FRAGMENT_PARAMS_KEY);
         step = Objects.requireNonNull(stepBundle).getParcelable(getString(R.string.step_key));
@@ -96,6 +98,30 @@ onAttachToParentFragment();
     @Override
     protected void initUi() {
         stepDescriptionText.setText(step.getDescription());
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (savedInstanceState != null) {
+            Resources resources = getResources();
+
+            savedPlayerPosition = savedInstanceState
+                    .getLong(getString(R.string.player_position_key),
+                            (long) resources.getInteger(R.integer.no_saved_position));
+            playWhenReady = savedInstanceState
+                    .getBoolean(getString(R.string.player_play_when_ready_key),
+                            resources.getBoolean(R.bool.play_when_ready_default));
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (player != null) {
+            outState.putLong(getString(R.string.player_position_key), player.getContentPosition());
+            outState.putBoolean(getString(R.string.player_play_when_ready_key), player.getPlayWhenReady());
+        }
     }
 
     @Override
@@ -150,7 +176,7 @@ onAttachToParentFragment();
             changePlayerScreenMode(ViewGroup.LayoutParams.MATCH_PARENT);
         } else {
             fragmentInteractionListener.showDefaultMode();
-            changePlayerScreenMode(0);
+           changePlayerScreenMode(0);
         }
     }
 
@@ -177,18 +203,6 @@ onAttachToParentFragment();
 
     private void loadThumbnail(String thumbnailUrl) {
 
-    }
-
-    public void imVisibleNow() {
-        if (step != null) {
-            checkVideoData();
-        }
-    }
-
-    public void imHiddenNow() {
-        if (player != null) {
-            releasePlayer();
-        }
     }
 
     private void releasePlayer() {
@@ -227,7 +241,11 @@ onAttachToParentFragment();
 
             playerView.setPlayer(player);
             playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
-            player.setPlayWhenReady(false);
+            player.setPlayWhenReady(playWhenReady);
+
+            if (savedPlayerPosition != getResources().getInteger(R.integer.no_saved_position)) {
+                player.seekTo(savedPlayerPosition);
+            }
 
             DataSource.Factory dataSource =
                     new DefaultHttpDataSourceFactory(
@@ -246,6 +264,4 @@ onAttachToParentFragment();
 
         void showDefaultMode();
     }
-
-
 }

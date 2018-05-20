@@ -6,14 +6,12 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
-import java.util.List;
 import java.util.Objects;
 
 import butterknife.BindView;
 import udacity.com.baking_app.R;
 import udacity.com.baking_app.adapters.RecipeStepsAdapter;
 import udacity.com.baking_app.data.Recipe;
-import udacity.com.baking_app.data.Step;
 import udacity.com.baking_app.widgets.SpacingItemDecorator;
 
 
@@ -82,29 +80,17 @@ public class RecipeStepsFragment extends BaseFragment {
         fragmentInteractionListener = null;
     }
 
-    public void showRecipesStepsList(List<Step> stepsList) {
-
-    }
-
     private void createRecipeAdapter(Recipe recipe) {
         recipeStepsAdapter = new RecipeStepsAdapter(recipe,
                 new RecipeStepsAdapter.RecyclerViewCallback() {
                     @Override
-                    public void onStepClick(Recipe recipe, int selectedStepPosition) {
-                        fragmentInteractionListener.onStepClick(recipe, selectedStepPosition);
-                    }
-
-                    @Override
-                    public void onIngredientsClick(Recipe recipe) {
-                        fragmentInteractionListener.onIngredientsClick(recipe);
+                    public void onRecipeDetailItemClick(Recipe recipe, int selectedStepPosition) {
+                        fragmentInteractionListener.onRecipeDetailItemClick(recipe, selectedStepPosition);
                     }
                 });
     }
 
     public interface OnFragmentInteractionListener {
-
-        void onIngredientsClick(Recipe recipe);
-
-        void onStepClick(Recipe recipe, int selectedStepPosition);
+        void onRecipeDetailItemClick(Recipe recipe, int selectedStepPosition);
     }
 }

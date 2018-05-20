@@ -18,5 +18,10 @@
     <string name="step_key">step-key</string>
     <string name="fragment_recipe_step_navigate_hlp_text">Swiping to the left or right shows the previous or next page</string>
     <string name="padding_new_text">/t</string>
-    <string name="recipe_detail_item_key">step-position-key</string>
+    <string name="recipe_detail_position_key">recipe-detail-position-key</string>
+    <string name="player_position_key">player-position-key</string>
+    <string name="player_play_when_ready_key">player-play-when-ready-key</string>
+    <string name="recipe_card_image_description">recipe image</string>
+    <string name="preff_default_recipe_detail_position">preff-default-recipe-detail-position</string>
+    <string name="default_recipe_detail_position_key">default-recipe-detail-position-key</string>
 </resources>

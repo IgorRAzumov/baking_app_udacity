@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import udacity.com.baking_app.R;
 import udacity.com.baking_app.fragments.RecipeDetailFragment;
 
@@ -24,12 +25,13 @@ public class RecipeDetailActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_detail);
+        ButterKnife.bind(this);
 
         initToolbar();
 
         if (savedInstanceState == null) {
             String recipeKey = getString(R.string.recipe_key);
-            String recipeItemPosition = getString(R.string.recipe_detail_item_key);
+            String recipeItemPosition = getString(R.string.recipe_detail_position_key);
 
             Intent intent = getIntent();
             Bundle arguments = new Bundle();
@@ -71,11 +73,14 @@ public class RecipeDetailActivity extends AppCompatActivity
     }
 
     private void initToolbar() {
+        toolbar.setTitle(getTitle());
         setSupportActionBar(toolbar);
+
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+
     }
 
 
@@ -86,6 +91,11 @@ public class RecipeDetailActivity extends AppCompatActivity
                 | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                 | View.SYSTEM_UI_FLAG_FULLSCREEN);
+
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.hide();
+        }
     }
 
 
@@ -95,6 +105,11 @@ public class RecipeDetailActivity extends AppCompatActivity
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                         | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.show();
+        }
     }
 
 

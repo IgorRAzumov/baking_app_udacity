@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import udacity.com.baking_app.R;
@@ -14,30 +16,20 @@ import udacity.com.baking_app.data.Recipe;
 import udacity.com.baking_app.data.Step;
 
 public class RecipeStepsAdapter extends RecyclerView.Adapter<RecipeStepsAdapter.ViewHolder> {
-
     private static final int INGREDIENTS_POSITION = 0;
+    private static final int STEP_POSITION_OFFSET = 1;
+
     private final Recipe recipe;
     private final RecyclerViewCallback recyclerViewCallback;
 
     private final View.OnClickListener itemClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            int position = (int) view.getTag();
-            switch (position) {
-                case INGREDIENTS_POSITION: {
-                    recyclerViewCallback.onIngredientsClick(recipe);
-                    break;
-                }
-                default: {
-                    recyclerViewCallback.onStepClick(recipe, position);
-                    break;
-                }
-            }
-
+            recyclerViewCallback.onRecipeDetailItemClick(recipe, (int) view.getTag());
         }
     };
 
-    public RecipeStepsAdapter(Recipe recipe, RecyclerViewCallback recyclerViewCallback) {
+    public RecipeStepsAdapter(@NonNull Recipe recipe, RecyclerViewCallback recyclerViewCallback) {
         this.recipe = recipe;
         this.recyclerViewCallback = recyclerViewCallback;
     }
@@ -59,7 +51,7 @@ public class RecipeStepsAdapter extends RecyclerView.Adapter<RecipeStepsAdapter.
                 break;
             }
             default: {
-                Step step = recipe.getSteps().get(position - 1);
+                Step step = recipe.getSteps().get(position - STEP_POSITION_OFFSET);
                 holder.titleTextView.setText(step.getShortDescription());
 
                 holder.itemView.setTag(position);
@@ -71,13 +63,18 @@ public class RecipeStepsAdapter extends RecyclerView.Adapter<RecipeStepsAdapter.
 
     @Override
     public int getItemCount() {
-        return recipe.getSteps().size() + 1;
+        int count;
+        List<Step> steps = recipe.getSteps();
+        if (steps == null) {
+            count = 0;
+        } else {
+            count = steps.size() + STEP_POSITION_OFFSET;
+        }
+        return count;
     }
 
     public interface RecyclerViewCallback {
-        void onStepClick(Recipe recipe, int selectedStepPosition);
-
-        void onIngredientsClick(Recipe recipe);
+        void onRecipeDetailItemClick(Recipe recipe, int selectedStepPosition);
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

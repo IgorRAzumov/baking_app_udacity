@@ -3,11 +3,11 @@ package udacity.com.baking_app.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import udacity.com.baking_app.R;
 import udacity.com.baking_app.data.Recipe;
 import udacity.com.baking_app.fragments.RecipesListFragment;
@@ -21,6 +21,7 @@ public class RecipesListActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipes_list);
+        ButterKnife.bind(this);
 
         initToolbar();
 
@@ -36,11 +37,8 @@ public class RecipesListActivity extends AppCompatActivity
     }
 
     private void initToolbar() {
+        toolbar.setTitle(getTitle());
         setSupportActionBar(toolbar);
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setTitle(R.string.recipes_list_toolbar_text);
-        }
     }
 
     @Override
@@ -50,7 +48,7 @@ public class RecipesListActivity extends AppCompatActivity
 
     private void startRecipeActivity(Recipe recipe) {
         Intent intent = new Intent(this, RecipeActivity.class);
-        intent.putExtra(getString(R.string.recipe_key),recipe);
+        intent.putExtra(getString(R.string.recipe_key), recipe);
         startActivity(intent);
     }
 }
