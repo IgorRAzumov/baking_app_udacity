@@ -12,8 +12,9 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.exoplayer2.DefaultLoadControl;
@@ -35,18 +36,25 @@ import butterknife.BindView;
 import udacity.com.baking_app.R;
 import udacity.com.baking_app.data.Step;
 
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+
 
 public class RecipeStepFragment extends BaseFragment {
-    @BindView(R.id.tv_fragment_recipe_step_description)
-    TextView stepDescriptionText;
+    @BindView(R.id.fl_fragment_recipe_step_media_container)
+    FrameLayout mediaContainerFrame;
     @BindView(R.id.plv_fragment_recipe_step_player_view)
     PlayerView playerView;
     @BindView(R.id.iv_fragment_recipe_step_default_image)
     ImageView defaultImageView;
     @BindView(R.id.cv_fragment_recipe_step_content)
     CardView descriptionCard;
+    @BindView(R.id.tv_fragment_recipe_step_description)
+    TextView stepDescriptionText;
+    @BindView(R.id.vi_fragment_recipe_step_divider)
+    View dividerView;
     @BindView(R.id.tv_fragment_recipe_step_nav_help)
     TextView navigationHelpText;
+
 
     private SimpleExoPlayer player;
     private OnFragmentInteractionListener fragmentInteractionListener;
@@ -66,20 +74,6 @@ public class RecipeStepFragment extends BaseFragment {
         return fragment;
     }
 
-    private void onAttachToParentFragment() {
-        Fragment parentFragment = getParentFragment();
-        if (parentFragment instanceof OnFragmentInteractionListener) {
-            fragmentInteractionListener = (OnFragmentInteractionListener) parentFragment;
-
-        }
-
-        if (fragmentInteractionListener == null) {
-            throw new RuntimeException(getString(
-                    R.string.error_implements_fragment_interaction_listener));
-        }
-    }
-
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,7 +82,6 @@ public class RecipeStepFragment extends BaseFragment {
                 .requireNonNull(getArguments()).getBundle(BUNDLE_FRAGMENT_PARAMS_KEY);
         step = Objects.requireNonNull(stepBundle).getParcelable(getString(R.string.step_key));
     }
-
 
     @Override
     protected int getFragmentLayout() {
@@ -170,30 +163,47 @@ public class RecipeStepFragment extends BaseFragment {
             return;
         }
 
-        Configuration configuration = getResources().getConfiguration();
+        Resources resources = getResources();
+        Configuration configuration = resources.getConfiguration();
         if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             fragmentInteractionListener.showFullScreenMode();
-            changePlayerScreenMode(ViewGroup.LayoutParams.MATCH_PARENT);
+            changePlayerScreenMode(MATCH_PARENT);
         } else {
             fragmentInteractionListener.showDefaultMode();
-           changePlayerScreenMode(0);
+            changePlayerScreenMode(resources
+                    .getInteger(R.integer.recipe_step_fr_player_def_size));
         }
     }
 
-    private void changePlayerScreenMode(int matchParent) {
-        if (matchParent == ViewGroup.LayoutParams.MATCH_PARENT) {
+    private void onAttachToParentFragment() {
+        Fragment parentFragment = getParentFragment();
+        if (parentFragment instanceof OnFragmentInteractionListener) {
+            fragmentInteractionListener = (OnFragmentInteractionListener) parentFragment;
+
+        }
+
+        if (fragmentInteractionListener == null) {
+            throw new RuntimeException(getString(
+                    R.string.error_implements_fragment_interaction_listener));
+        }
+    }
+
+    private void changePlayerScreenMode(int size) {
+        LinearLayout.LayoutParams playerLayoutParams = (size == MATCH_PARENT)
+                ? new LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
+                : new LinearLayout.LayoutParams(size, MATCH_PARENT, 3);
+       mediaContainerFrame.setLayoutParams(playerLayoutParams);
+
+        if (size == MATCH_PARENT) {
+            dividerView.setVisibility(View.GONE);
             descriptionCard.setVisibility(View.GONE);
             navigationHelpText.setVisibility(View.GONE);
         } else {
+            dividerView.setVisibility(View.INVISIBLE);
             descriptionCard.setVisibility(View.VISIBLE);
             navigationHelpText.setVisibility(View.VISIBLE);
         }
 
-
-        ViewGroup.LayoutParams params = playerView.getLayoutParams();
-        params.width = matchParent;
-        params.height = matchParent;
-        playerView.setLayoutParams(params);
     }
 
     private void showDefaultImage() {
@@ -243,9 +253,6 @@ public class RecipeStepFragment extends BaseFragment {
             playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
             player.setPlayWhenReady(playWhenReady);
 
-            if (savedPlayerPosition != getResources().getInteger(R.integer.no_saved_position)) {
-                player.seekTo(savedPlayerPosition);
-            }
 
             DataSource.Factory dataSource =
                     new DefaultHttpDataSourceFactory(
@@ -255,7 +262,10 @@ public class RecipeStepFragment extends BaseFragment {
                     .createMediaSource(Uri.parse(mediaUri));
 
             player.prepare(videoSource);
-
+////////////////////////////////////////////////////////////////////////////////////////////////////
+            if (savedPlayerPosition != getResources().getInteger(R.integer.no_saved_position)) {
+                player.seekTo(savedPlayerPosition);
+            }
         }
     }
 

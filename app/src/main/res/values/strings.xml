@@ -22,6 +22,13 @@
     <string name="player_position_key">player-position-key</string>
     <string name="player_play_when_ready_key">player-play-when-ready-key</string>
     <string name="recipe_card_image_description">recipe image</string>
-    <string name="preff_default_recipe_detail_position">preff-default-recipe-detail-position</string>
+    <string name="pref_default_recipe_detail_position">pref-default-recipe-detail-position</string>
     <string name="default_recipe_detail_position_key">default-recipe-detail-position-key</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
+    <string name="ingredients_json_key">ingredients-json-key</string>
+    <string name="recipe_no_ingredients_message_text">No selected recipe.Please run app and select recipe</string>
+    <string name="recipe_ingredients_name_default_text">Recipe Name :</string>
+    <string name="ingredient_card_ingredient_label">Ingredient :</string>
+    <string name="ingredient_card_quantity_label">Quantity :</string>
 </resources>

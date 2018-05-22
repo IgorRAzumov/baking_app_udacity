@@ -1,7 +1,6 @@
 package udacity.com.baking_app.activities;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -18,6 +17,7 @@ import udacity.com.baking_app.R;
 import udacity.com.baking_app.data.Recipe;
 import udacity.com.baking_app.fragments.RecipeDetailFragment;
 import udacity.com.baking_app.fragments.RecipeStepsFragment;
+import udacity.com.baking_app.utils.PreferencesUtil;
 
 
 public class RecipeActivity extends AppCompatActivity
@@ -132,28 +132,19 @@ public class RecipeActivity extends AppCompatActivity
     }
 
     private void showRecipeDetailFromPosition(int recipeDetailPosition) {
-        RecipeDetailFragment fragment = (RecipeDetailFragment) getSupportFragmentManager()
+       /* RecipeDetailFragment fragment = (RecipeDetailFragment) getSupportFragmentManager()
                 .findFragmentByTag(RecipeDetailFragment.TAG);
         if (fragment != null) {
             fragment.showRecipeDetailInfo(recipeDetailPosition);
-        }
+        }*/
     }
 
     private int getSavedRecipeDetailPosition() {
-        SharedPreferences sharedPreferences =
-                getSharedPreferences(getString(R.string.app_name), MODE_PRIVATE);
-        return sharedPreferences.getInt(
-                getString(R.string.preff_default_recipe_detail_position),
-                getResources().getInteger(R.integer.default_recipe_detail_position));
+        return PreferencesUtil.getSavedRecipeDetailPosition(this);
     }
 
     private void saveRecipeDetailPosition() {
-        SharedPreferences sharedPreferences =
-                getSharedPreferences(getString(R.string.app_name), MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt(getString(R.string.preff_default_recipe_detail_position),
-                getRecipeDetailPosition());
-        editor.apply();
+        PreferencesUtil.saveRecipeDetailPosition(this, getRecipeDetailPosition());
     }
 
     private int getRecipeDetailPosition() {

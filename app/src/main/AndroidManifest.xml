@@ -11,7 +11,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-
         <activity
             android:name=".activities.RecipeActivity"
             android:parentActivityName=".activities.RecipesListActivity">
@@ -19,7 +18,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="udacity.com.baking_app.activities.RecipesListActivity" />
         </activity>
-
         <activity
             android:name=".activities.RecipeDetailActivity"
             android:configChanges="orientation|screenSize"
@@ -28,14 +26,32 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="udacity.com.baking_app.activities.RecipeActivity" />
         </activity>
-
         <activity android:name=".activities.RecipesListActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <service
+            android:name=".services.ListWidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS">
+        </service>
 
+        <service
+            android:name=".services.UpdateIngredientsWidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS">
+        </service>
+
+        <receiver android:name=".widgets.ingredientsWidget.IngredientsWidgetProvider">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/recipe_ingridients_widget_info" />
+        </receiver>
     </application>
 
 </manifest>

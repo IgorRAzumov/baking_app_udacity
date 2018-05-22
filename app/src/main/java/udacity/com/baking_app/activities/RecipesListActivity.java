@@ -11,6 +11,8 @@ import butterknife.ButterKnife;
 import udacity.com.baking_app.R;
 import udacity.com.baking_app.data.Recipe;
 import udacity.com.baking_app.fragments.RecipesListFragment;
+import udacity.com.baking_app.services.UpdateIngredientsWidgetService;
+import udacity.com.baking_app.utils.PreferencesUtil;
 
 public class RecipesListActivity extends AppCompatActivity
         implements RecipesListFragment.OnFragmentInteractionListener {
@@ -44,6 +46,9 @@ public class RecipesListActivity extends AppCompatActivity
     @Override
     public void onRecipeClick(Recipe recipe) {
         startRecipeActivity(recipe);
+
+        PreferencesUtil.saveRecipeIngredientList(this, recipe.getIngredients());
+        UpdateIngredientsWidgetService.startActionUpdateIngredientsWidgets(this);
     }
 
     private void startRecipeActivity(Recipe recipe) {
