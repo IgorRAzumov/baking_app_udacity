@@ -5,6 +5,7 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.RemoteViews;
 
@@ -12,7 +13,6 @@ import udacity.com.baking_app.R;
 import udacity.com.baking_app.activities.RecipesListActivity;
 import udacity.com.baking_app.services.ListWidgetService;
 import udacity.com.baking_app.services.UpdateIngredientsWidgetService;
-import udacity.com.baking_app.utils.PreferencesUtil;
 
 public class IngredientsWidgetProvider extends AppWidgetProvider {
 
@@ -21,11 +21,7 @@ public class IngredientsWidgetProvider extends AppWidgetProvider {
         RemoteViews views = new RemoteViews(context.getPackageName(),
                 R.layout.recipe_ingredients_widget);
 
-        if (PreferencesUtil.checkIngredientList(context)) {
-            showIngredientsViews(context, views);
-        } else {
-            showNoSelectedRecipeMessage(context, views);
-        }
+        showIngredientsViews(context, views);
 
         setOnClickListener(context, views);
 
@@ -41,8 +37,9 @@ public class IngredientsWidgetProvider extends AppWidgetProvider {
 
     private static void setOnClickListener(Context context, RemoteViews views) {
         Intent intent = new Intent(context, RecipesListActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-        views.setOnClickPendingIntent(R.id.lly_recipe_ingredients_widget_container, pendingIntent);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+        views.setPendingIntentTemplate(R.id.lv_recipe_ingredients_widget_list, pendingIntent);
 
     }
 
@@ -65,6 +62,15 @@ public class IngredientsWidgetProvider extends AppWidgetProvider {
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         UpdateIngredientsWidgetService.startActionUpdateIngredientsWidgets(context);
     }
+
+    @Override
+    public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager,
+                                          int appWidgetId, Bundle newOptions) {
+        UpdateIngredientsWidgetService.startActionUpdateIngredientsWidgets(context);
+        super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions);
+    }
+
+
 
     @Override
     public void onEnabled(Context context) {

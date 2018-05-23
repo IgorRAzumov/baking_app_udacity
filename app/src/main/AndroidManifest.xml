@@ -39,8 +39,7 @@
         </service>
 
         <service
-            android:name=".services.UpdateIngredientsWidgetService"
-            android:permission="android.permission.BIND_REMOTEVIEWS">
+            android:name=".services.UpdateIngredientsWidgetService">
         </service>
 
         <receiver android:name=".widgets.ingredientsWidget.IngredientsWidgetProvider">

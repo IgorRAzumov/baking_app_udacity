@@ -64,11 +64,15 @@ public class RecipeStepsAdapter extends RecyclerView.Adapter<RecipeStepsAdapter.
     @Override
     public int getItemCount() {
         int count;
-        List<Step> steps = recipe.getSteps();
-        if (steps == null) {
+        if (recipe == null) {
             count = 0;
         } else {
-            count = steps.size() + STEP_POSITION_OFFSET;
+            List<Step> steps = recipe.getSteps();
+            if (steps == null) {
+                count = 0;
+            } else {
+                count = steps.size() + STEP_POSITION_OFFSET;
+            }
         }
         return count;
     }

@@ -42,6 +42,9 @@ public class UpdateIngredientsWidgetService extends IntentService {
                 .getAppWidgetIds(new ComponentName(this, IngredientsWidgetProvider.class));
 
         IngredientsWidgetProvider.updateAppWidgets(this, appWidgetManager, appWidgetIds);
+
+      /*  appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds,
+                R.id.lv_recipe_ingredients_widget_list);*/
     }
 
 }
