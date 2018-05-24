@@ -1,6 +1,7 @@
 package udacity.com.baking_app.fragments;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,27 +11,28 @@ import java.util.Objects;
 
 import butterknife.BindView;
 import udacity.com.baking_app.R;
-import udacity.com.baking_app.adapters.RecipeStepsAdapter;
+import udacity.com.baking_app.adapters.RecipeContentAdapter;
 import udacity.com.baking_app.data.Recipe;
+import udacity.com.baking_app.utils.Utils;
 import udacity.com.baking_app.widgets.SpacingItemDecorator;
 
 
-public class RecipeStepsFragment extends BaseFragment {
-    @BindView(R.id.rv_fragment_recipes_steps)
-    RecyclerView stepsRecycler;
+public class RecipeContentFragment extends BaseFragment {
+    @BindView(R.id.rv_fragment_recipe_content)
+    RecyclerView contentRecycler;
 
-    private RecipeStepsAdapter recipeStepsAdapter;
+    private RecipeContentAdapter recipeContentAdapter;
     private OnFragmentInteractionListener fragmentInteractionListener;
 
-    public static RecipeStepsFragment newInstance(@NonNull Bundle params) {
-        RecipeStepsFragment fragment = new RecipeStepsFragment();
+    public static RecipeContentFragment newInstance(@NonNull Bundle params) {
+        RecipeContentFragment fragment = new RecipeContentFragment();
         Bundle args = new Bundle();
         args.putBundle(BUNDLE_FRAGMENT_PARAMS_KEY, params);
         fragment.setArguments(args);
         return fragment;
     }
 
-    public RecipeStepsFragment() {
+    public RecipeContentFragment() {
     }
 
     @Override
@@ -54,25 +56,29 @@ public class RecipeStepsFragment extends BaseFragment {
         createRecipeAdapter(recipe);
     }
 
-
     @Override
     protected int getFragmentLayout() {
-        return R.layout.fragment_recipe;
+        return R.layout.fragment_recipe_content;
     }
 
     @Override
     protected void initUi() {
-        initStepsRecycle();
+        initContentRecycle();
     }
 
-    private void initStepsRecycle() {
+    private void initContentRecycle() {
+        Resources resources = getResources();
+        int spanCount = resources.getInteger(R.integer.recipe_content_rv_span_count);
+        int spacingPx = Utils.convertDpToPx(
+                resources.getDimension(R.dimen.recipes_content_rv_item_decorator_spacing),
+                resources.getDisplayMetrics().density);
+
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        stepsRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
-        stepsRecycler.addItemDecoration(new SpacingItemDecorator(1, 5, true));
-        stepsRecycler.setAdapter(recipeStepsAdapter);
+        contentRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
+        contentRecycler.addItemDecoration(new SpacingItemDecorator(spanCount, spacingPx, true));
+        contentRecycler.setAdapter(recipeContentAdapter);
     }
-
 
     @Override
     public void onDetach() {
@@ -81,16 +87,16 @@ public class RecipeStepsFragment extends BaseFragment {
     }
 
     private void createRecipeAdapter(Recipe recipe) {
-        recipeStepsAdapter = new RecipeStepsAdapter(recipe,
-                new RecipeStepsAdapter.RecyclerViewCallback() {
+        recipeContentAdapter = new RecipeContentAdapter(recipe,
+                new RecipeContentAdapter.RecyclerViewCallback() {
                     @Override
                     public void onRecipeDetailItemClick(Recipe recipe, int selectedStepPosition) {
-                        fragmentInteractionListener.onRecipeDetailItemClick(recipe, selectedStepPosition);
+                        fragmentInteractionListener.onRecipeContentItemClick(recipe, selectedStepPosition);
                     }
                 });
     }
 
     public interface OnFragmentInteractionListener {
-        void onRecipeDetailItemClick(Recipe recipe, int selectedStepPosition);
+        void onRecipeContentItemClick(Recipe recipe, int selectedStepPosition);
     }
 }

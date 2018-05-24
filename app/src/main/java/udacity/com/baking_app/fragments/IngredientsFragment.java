@@ -1,16 +1,19 @@
 package udacity.com.baking_app.fragments;
 
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import java.util.List;
+import java.util.Objects;
 
 import butterknife.BindView;
 import udacity.com.baking_app.R;
 import udacity.com.baking_app.adapters.RecipeIngredientsAdapter;
 import udacity.com.baking_app.data.Ingredient;
+import udacity.com.baking_app.utils.Utils;
 import udacity.com.baking_app.widgets.SpacingItemDecorator;
 
 public class IngredientsFragment extends BaseFragment {
@@ -35,11 +38,9 @@ public class IngredientsFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        assert getArguments() != null;
-        Bundle ingredientsListBundle = getArguments()
+        Bundle ingredientsListBundle = Objects.requireNonNull(getArguments())
                 .getBundle(getString(R.string.bundle_fragment_params_key));
-        assert ingredientsListBundle != null;
-        List<Ingredient> ingredientsList = ingredientsListBundle
+        List<Ingredient> ingredientsList = Objects.requireNonNull(ingredientsListBundle)
                 .getParcelableArrayList(getString(R.string.ingredients_key));
         recipeIngredientsAdapter = new RecipeIngredientsAdapter(ingredientsList);
     }
@@ -55,10 +56,16 @@ public class IngredientsFragment extends BaseFragment {
     }
 
     private void initIngredientsRecycler() {
+        Resources resources = getResources();
+        int spanCount = resources.getInteger(R.integer.ingredients_fragment_rv_span_count);
+        int spacingPx = Utils.convertDpToPx(
+                resources.getDimension(R.dimen.ingredients_fragment_rv_item_decorator_spacing),
+                resources.getDisplayMetrics().density);
+
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         ingredientsRecycler.setLayoutManager(layoutManager);
-        ingredientsRecycler.addItemDecoration(new SpacingItemDecorator(1, 16, false));
+        ingredientsRecycler.addItemDecoration(new SpacingItemDecorator(spanCount, spacingPx, true));
         ingredientsRecycler.setAdapter(recipeIngredientsAdapter);
     }
 }

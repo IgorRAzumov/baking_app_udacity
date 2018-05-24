@@ -15,7 +15,7 @@ import udacity.com.baking_app.R;
 import udacity.com.baking_app.data.Recipe;
 import udacity.com.baking_app.data.Step;
 
-public class RecipeStepsAdapter extends RecyclerView.Adapter<RecipeStepsAdapter.ViewHolder> {
+public class RecipeContentAdapter extends RecyclerView.Adapter<RecipeContentAdapter.ViewHolder> {
     private static final int INGREDIENTS_POSITION = 0;
     private static final int STEP_POSITION_OFFSET = 1;
 
@@ -29,7 +29,7 @@ public class RecipeStepsAdapter extends RecyclerView.Adapter<RecipeStepsAdapter.
         }
     };
 
-    public RecipeStepsAdapter(@NonNull Recipe recipe, RecyclerViewCallback recyclerViewCallback) {
+    public RecipeContentAdapter(@NonNull Recipe recipe, RecyclerViewCallback recyclerViewCallback) {
         this.recipe = recipe;
         this.recyclerViewCallback = recyclerViewCallback;
     }
@@ -47,16 +47,15 @@ public class RecipeStepsAdapter extends RecyclerView.Adapter<RecipeStepsAdapter.
         switch (position) {
             case INGREDIENTS_POSITION: {
                 holder.titleTextView.setText(R.string.ingredients);
-                holder.itemView.setTag(INGREDIENTS_POSITION);
+                holder.itemView.setTag(position);
                 break;
             }
             default: {
                 Step step = recipe.getSteps().get(position - STEP_POSITION_OFFSET);
                 holder.titleTextView.setText(step.getShortDescription());
-
                 holder.itemView.setTag(position);
-                holder.itemView.setOnClickListener(itemClickListener);
             }
+            holder.itemView.setOnClickListener(itemClickListener);
         }
 
     }
@@ -64,16 +63,13 @@ public class RecipeStepsAdapter extends RecyclerView.Adapter<RecipeStepsAdapter.
     @Override
     public int getItemCount() {
         int count;
-        if (recipe == null) {
+        List<Step> steps = recipe.getSteps();
+        if (steps == null) {
             count = 0;
         } else {
-            List<Step> steps = recipe.getSteps();
-            if (steps == null) {
-                count = 0;
-            } else {
-                count = steps.size() + STEP_POSITION_OFFSET;
-            }
+            count = steps.size() + STEP_POSITION_OFFSET;
         }
+
         return count;
     }
 

@@ -1,7 +1,6 @@
 package udacity.com.baking_app.fragments;
 
 import android.content.Context;
-import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -40,6 +39,8 @@ import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
 
 public class RecipeStepFragment extends BaseFragment {
+    public static final String TAG = RecipeStepFragment.class.getCanonicalName();
+
     @BindView(R.id.fl_fragment_recipe_step_media_container)
     FrameLayout mediaContainerFrame;
     @BindView(R.id.plv_fragment_recipe_step_player_view)
@@ -86,6 +87,17 @@ public class RecipeStepFragment extends BaseFragment {
     @Override
     protected int getFragmentLayout() {
         return R.layout.fragment_recipe_step;
+    }
+
+    @Override
+    protected void checkSavedInstanceState(@Nullable Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            if (player != null) {
+                player.setPlayWhenReady(savedInstanceState
+                        .getBoolean(getString(R.string.player_play_when_ready_key)));
+                player.seekTo(savedInstanceState.getLong(getString(R.string.player_position_key)));
+            }
+        }
     }
 
     @Override
@@ -155,9 +167,25 @@ public class RecipeStepFragment extends BaseFragment {
         fragmentInteractionListener = null;
     }
 
+    public boolean isContainsVideo() {
+        String mediaUri = step.getVideoURL();
+        return (mediaUri != null && !TextUtils.isEmpty(mediaUri));
+    }
+
+    public void showFullscreenMode() {
+        changePlayerScreenMode(getResources()
+                .getInteger(MATCH_PARENT));
+    }
+
+    public void showDefaultMode() {
+        changePlayerScreenMode(getResources()
+                .getInteger(R.integer.recipe_step_fr_player_def_size));
+    }
+
+    /*
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
+     *//*   super.onConfigurationChanged(newConfig);
         String videoUrl = step.getVideoURL();
         if (videoUrl == null || TextUtils.isEmpty(videoUrl)) {
             return;
@@ -170,10 +198,9 @@ public class RecipeStepFragment extends BaseFragment {
             changePlayerScreenMode(MATCH_PARENT);
         } else {
             fragmentInteractionListener.showDefaultMode();
-            changePlayerScreenMode(resources
-                    .getInteger(R.integer.recipe_step_fr_player_def_size));
-        }
-    }
+
+        }*//*
+    }*/
 
     private void onAttachToParentFragment() {
         Fragment parentFragment = getParentFragment();
@@ -192,7 +219,7 @@ public class RecipeStepFragment extends BaseFragment {
         LinearLayout.LayoutParams playerLayoutParams = (size == MATCH_PARENT)
                 ? new LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
                 : new LinearLayout.LayoutParams(size, MATCH_PARENT, 3);
-       mediaContainerFrame.setLayoutParams(playerLayoutParams);
+        mediaContainerFrame.setLayoutParams(playerLayoutParams);
 
         if (size == MATCH_PARENT) {
             dividerView.setVisibility(View.GONE);
@@ -221,7 +248,6 @@ public class RecipeStepFragment extends BaseFragment {
         player = null;
         playerView.setPlayer(null);
     }
-
 
     private void checkVideoData() {
         String mediaUri = step.getVideoURL();

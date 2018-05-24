@@ -6,4 +6,7 @@
     <integer name="list_recipes_portrait_span_coun">1</integer>
     <integer name="default_recipe_detail_position">0</integer>
     <integer name="recipe_step_fr_player_def_size">0</integer>
+    <integer name="recipe_content_rv_span_count">1</integer>
+    <integer name="ingredients_fragment_rv_span_count">1</integer>
+    <integer name="recipe_detail_fr_offscreen_page_limit">0</integer>
 </resources>

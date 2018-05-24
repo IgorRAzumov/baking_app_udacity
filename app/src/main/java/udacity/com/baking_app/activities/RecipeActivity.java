@@ -1,9 +1,9 @@
 package udacity.com.baking_app.activities;
 
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
@@ -15,18 +15,20 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import udacity.com.baking_app.R;
 import udacity.com.baking_app.data.Recipe;
+import udacity.com.baking_app.fragments.RecipeContentFragment;
 import udacity.com.baking_app.fragments.RecipeDetailFragment;
-import udacity.com.baking_app.fragments.RecipeStepsFragment;
+import udacity.com.baking_app.fragments.RecipeStepFragment;
 import udacity.com.baking_app.utils.PreferencesUtil;
 
 
 public class RecipeActivity extends AppCompatActivity
-        implements RecipeStepsFragment.OnFragmentInteractionListener,
+        implements RecipeContentFragment.OnFragmentInteractionListener,
         RecipeDetailFragment.OnFragmentInteractionListener {
     @BindView(R.id.tb_toolbar)
     Toolbar toolbar;
 
-    private boolean mTwoPane;
+    private boolean twoPane;
+    private int recipeContentPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,17 +37,25 @@ public class RecipeActivity extends AppCompatActivity
         ButterKnife.bind(this);
 
         initToolbar();
-        checkTwoPane();
+        twoPane = checkTwoPane();
 
         if (savedInstanceState == null) {
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            Bundle bundle = getFragmentBundle();
+            addRecipeContentFragment();
 
-            showStepsFragment(fragmentManager, bundle);
-            if (mTwoPane) {
-                showRecipeDetailFragment(fragmentManager, bundle);
+            if (twoPane) {
+                addRecipeDetailFragment(R.id.fl_activity_recipe_detail_container);
             }
+        } else {
+            recipeContentPosition = savedInstanceState
+                    .getInt(getString(R.string.recipe_content_position_key));
         }
+
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt(getString(R.string.recipe_content_position_key), recipeContentPosition);
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -58,21 +68,18 @@ public class RecipeActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-
     @Override
     protected void onPause() {
         super.onPause();
         saveRecipeDetailPosition();
-
     }
 
-
     @Override
-    public void onRecipeDetailItemClick(Recipe recipe, int recipeDetailPosition) {
-        if (mTwoPane) {
-            showRecipeDetailFromPosition(recipeDetailPosition);
+    public void onRecipeContentItemClick(Recipe recipe, int recipeDetailPosition) {
+        if (!twoPane) {
+            replaceContentFragmentWithDetailFragment(recipeDetailPosition);
         } else {
-            startRecipeDetailActivity(recipe, recipeDetailPosition);
+            showRecipeDetailFragment(recipeDetailPosition);
         }
     }
 
@@ -86,15 +93,12 @@ public class RecipeActivity extends AppCompatActivity
         }
     }
 
-    private void checkTwoPane() {
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE ||
-                findViewById(R.id.fl_activity_detail_recipe_container) != null) {
-            mTwoPane = true;
-        }
+    private boolean checkTwoPane() {
+        return findViewById(R.id.fl_activity_recipe_detail_container) != null;
     }
 
     @NonNull
-    private Bundle getFragmentBundle() {
+    private Bundle getRecipeFragmentBundle() {
         String recipeKey = getString(R.string.recipe_key);
         Recipe recipe = getIntent().getParcelableExtra(recipeKey);
 
@@ -106,37 +110,50 @@ public class RecipeActivity extends AppCompatActivity
         return bundle;
     }
 
-    private void showRecipeDetailFragment(FragmentManager fragmentManager, Bundle bundle) {
-        fragmentManager
+    private void addRecipeContentFragment() {
+        getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.fl_activity_detail_recipe_container,
+                .replace(R.id.fl_activity_recipe_main_container,
+                        RecipeContentFragment.newInstance(getRecipeFragmentBundle()),
+                        RecipeStepFragment.TAG)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .commit();
+    }
+
+    private void addRecipeDetailFragment(int containerId) {
+        Bundle bundle = getRecipeFragmentBundle();
+        bundle.putInt(getString(R.string.recipe_content_position_key), recipeContentPosition);
+
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(containerId,
                         RecipeDetailFragment.newInstance(bundle), RecipeDetailFragment.TAG)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 .commit();
     }
 
-    private void showStepsFragment(FragmentManager fragmentManager, Bundle bundle) {
-        fragmentManager
-                .beginTransaction()
-                .replace(R.id.fl_activity_recipe_container,
-                        RecipeStepsFragment.newInstance(bundle))
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .commit();
+    private void replaceContentFragmentWithDetailFragment(int recipeContentPosition) {
+        this.recipeContentPosition = recipeContentPosition;
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        Fragment fragment = fragmentManager.findFragmentByTag(RecipeDetailFragment.TAG);
+        if (fragment == null || !(fragment instanceof RecipeDetailFragment)) {
+            addRecipeDetailFragment(R.id.fl_activity_recipe_main_container);
+        } else {
+            ((RecipeDetailFragment) fragment).setCurrentDetailItem(recipeContentPosition);
+            fragmentManager
+                    .beginTransaction()
+                    .replace(R.id.fl_activity_recipe_main_container, fragment)
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                    .commit();
+        }
+
     }
 
-    private void startRecipeDetailActivity(Recipe recipe, int recipeDetailPosition) {
-        Intent intent = new Intent(this, RecipeDetailActivity.class);
-        intent.putExtra(getString(R.string.recipe_key), recipe);
-        intent.putExtra(getString(R.string.recipe_detail_position_key), recipeDetailPosition);
-        startActivity(intent);
-    }
-
-    private void showRecipeDetailFromPosition(int recipeDetailPosition) {
-       /* RecipeDetailFragment fragment = (RecipeDetailFragment) getSupportFragmentManager()
+    private void showRecipeDetailFragment(int recipeDetailPosition) {
+        RecipeDetailFragment fragment = (RecipeDetailFragment) getSupportFragmentManager()
                 .findFragmentByTag(RecipeDetailFragment.TAG);
-        if (fragment != null) {
-            fragment.showRecipeDetailInfo(recipeDetailPosition);
-        }*/
+        fragment.setCurrentDetailItem(recipeDetailPosition);
     }
 
     private int getSavedRecipeDetailPosition() {
@@ -154,14 +171,69 @@ public class RecipeActivity extends AppCompatActivity
                 ? getResources().getInteger(R.integer.default_recipe_detail_position)
                 : fragment.getRecipeDetailPosition();
     }
-
-    @Override
-    public void showFullScreenMode() {
-
-    }
-
-    @Override
-    public void showDefaultMode() {
-
-    }
 }
+
+/*
+*
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        decorView = getWindow().getDecorView();
+        decorView.setOnSystemUiVisibilityChangeListener(createSystemUiVisabilytyChangeListener());
+
+ }
+
+    private View.OnSystemUiVisibilityChangeListener createSystemUiVisabilytyChangeListener() {
+        return new View.OnSystemUiVisibilityChangeListener() {
+            @Override
+            public void onSystemUiVisibilityChange(int visibility) {
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                Fragment fragment = fragmentManager.findFragmentByTag(RecipeDetailFragment.TAG);
+                if (fragment == null) {
+                    return;
+                }
+                RecipeDetailFragment recipeDetailFragment = (RecipeDetailFragment) fragment;
+
+                if (!recipeDetailFragment.isCurrentItemContainsVideo()) {
+                    return;
+                }
+
+                if ((visibility & View.SYSTEM_UI_FLAG_FULLSCREEN) == 0) {
+                    showSystemUI();
+                    recipeDetailFragment.showDefaultMode();
+                } else {
+                    hideSystemUI();
+                    recipeDetailFragment.showFullScreenMode();
+                }
+            }
+        };
+    }
+
+    private void hideSystemUI() {
+
+        decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_FULLSCREEN);
+
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.hide();
+        }
+    }
+
+    private void showSystemUI() {
+
+        decorView.setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.show();
+        }
+    }
+*
+*
+* */

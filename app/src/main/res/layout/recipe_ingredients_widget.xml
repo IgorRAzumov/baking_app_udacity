@@ -4,20 +4,22 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     android:gravity="center"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@android:color/white">
 
     <TextView
         android:id="@+id/tv_recipe_ingredients_widget_recipe_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:gravity="center" />
+        android:gravity="center"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Title" />
 
     <ListView
         android:id="@+id/lv_recipe_ingredients_widget_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:listitem="@layout/ingredient_card"/>
+        tools:listitem="@layout/ingredient_list_item"/>
 
     <TextView
         android:id="@+id/tv_recipe_ingredients_widget_no_ingredients_text"

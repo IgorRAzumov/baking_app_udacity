@@ -7,4 +7,6 @@
     <dimen name="material_vertical_port_margin">16dp</dimen>
     <dimen name="recipes_fragment_rv_item_decorator_spacing">5dp</dimen>
     <dimen name="widget_margin">0dp</dimen>
+    <dimen name="recipes_content_rv_item_decorator_spacing">5dp</dimen>
+    <dimen name="ingredients_fragment_rv_item_decorator_spacing">8dp</dimen>
 </resources>

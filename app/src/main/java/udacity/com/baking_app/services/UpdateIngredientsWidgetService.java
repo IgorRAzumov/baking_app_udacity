@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 
+import udacity.com.baking_app.R;
 import udacity.com.baking_app.widgets.ingredientsWidget.IngredientsWidgetProvider;
 
 public class UpdateIngredientsWidgetService extends IntentService {
@@ -41,10 +42,12 @@ public class UpdateIngredientsWidgetService extends IntentService {
         int[] appWidgetIds = appWidgetManager
                 .getAppWidgetIds(new ComponentName(this, IngredientsWidgetProvider.class));
 
+        appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds,
+                R.id.lv_recipe_ingredients_widget_list);
+
         IngredientsWidgetProvider.updateAppWidgets(this, appWidgetManager, appWidgetIds);
 
-      /*  appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds,
-                R.id.lv_recipe_ingredients_widget_list);*/
+
     }
 
 }

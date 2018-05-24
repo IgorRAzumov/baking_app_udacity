@@ -23,7 +23,6 @@ public class RecipeDetailFragment extends BaseFragment
     ViewPager recipeViewPager;
 
     private int viewPagerPosition;
-    private int ingredientsFragmentPosition;
     private RecipeDetailPageAdapter recipeDetailAdapter;
     private OnFragmentInteractionListener fragmentInteractionListener;
 
@@ -53,19 +52,17 @@ public class RecipeDetailFragment extends BaseFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        Bundle recipeDetailBundle = Objects.requireNonNull(getArguments())
-                .getBundle(getString(R.string.bundle_fragment_params_key));
-
-
         Context context = getContext();
         if (context != null) {
+            Bundle bundle = Objects.requireNonNull(getArguments())
+                    .getBundle(getString(R.string.bundle_fragment_params_key));
             String recipeKey = getString(R.string.recipe_key);
-            Recipe recipe = Objects.requireNonNull(recipeDetailBundle).getParcelable(recipeKey);
+            Recipe recipe = Objects.requireNonNull(bundle).getParcelable(recipeKey);
+            viewPagerPosition = bundle
+                    .getInt(getString(R.string.recipe_content_position_key));
+
             recipeDetailAdapter = new RecipeDetailPageAdapter(context, getChildFragmentManager(),
-                    recipe);
-            viewPagerPosition = recipeDetailBundle
-                    .getInt(getString(R.string.recipe_detail_position_key));
+                    Objects.requireNonNull(recipe));
         }
     }
 
@@ -85,28 +82,38 @@ public class RecipeDetailFragment extends BaseFragment
         fragmentInteractionListener = null;
     }
 
-    @Override
+
     public void showFullScreenMode() {
-        fragmentInteractionListener.showFullScreenMode();
+        Fragment fragment = recipeDetailAdapter.getCurrentFragment();
+        if (fragment == null) {
+            return;
+        }
+        ((RecipeStepFragment) fragment).showFullscreenMode();
     }
 
-    @Override
+
     public void showDefaultMode() {
-        fragmentInteractionListener.showDefaultMode();
-    }
+        Fragment fragment = recipeDetailAdapter.getCurrentFragment();
+        if (fragment == null) {
+            return;
+        }
+        ((RecipeStepFragment) fragment).showDefaultMode();
 
+    }
 
     private void initViewPager() {
         FragmentActivity fragmentActivity = getActivity();
         if (fragmentActivity == null) {
             return;
         }
-        recipeViewPager.setOffscreenPageLimit(1);
+        recipeViewPager.setOffscreenPageLimit(getResources()
+                .getInteger(R.integer.recipe_detail_fr_offscreen_page_limit));
         recipeViewPager.setAdapter(recipeDetailAdapter);
         recipeViewPager.setCurrentItem(viewPagerPosition, false);
         recipeViewPager.addOnPageChangeListener(createViewPagerListener());
 
     }
+
 
 
     @NonNull
@@ -140,18 +147,24 @@ public class RecipeDetailFragment extends BaseFragment
     }
 
 
-    public void showRecipeDetailInfo(int recipeDetailInfo) {
-        recipeViewPager.setCurrentItem(recipeDetailInfo);
-    }
-
     public int getRecipeDetailPosition() {
         return recipeViewPager.getCurrentItem();
     }
 
+    public boolean isCurrentItemContainsVideo() {
+        boolean isContain = false;
+        Fragment fragment = recipeDetailAdapter.getCurrentFragment();
+        if (fragment != null && fragment instanceof RecipeStepFragment) {
+            isContain = ((RecipeStepFragment) fragment).isContainsVideo();
+        }
+        return isContain;
+    }
+
+    public void setCurrentDetailItem(int recipeDetailPosition) {
+        recipeViewPager.setCurrentItem(recipeDetailPosition);
+    }
+
 
     public interface OnFragmentInteractionListener {
-        void showFullScreenMode();
-
-        void showDefaultMode();
     }
 }

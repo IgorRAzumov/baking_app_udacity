@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.view.ViewGroup;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +24,7 @@ public class RecipeDetailPageAdapter extends FragmentStatePagerAdapter {
     private final String ingredientKey;
     private final String stepKey;
 
+    private Fragment fragment;
     private Recipe recipe;
 
     public RecipeDetailPageAdapter(Context context, FragmentManager fm, @NonNull Recipe recipe) {
@@ -34,7 +36,6 @@ public class RecipeDetailPageAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        Fragment fragment;
         Bundle bundle = new Bundle();
         switch (position) {
             case INGREDIENTS_POSITION: {
@@ -62,5 +63,17 @@ public class RecipeDetailPageAdapter extends FragmentStatePagerAdapter {
             count = steps.size() + STEP_POSITION_OFFSET;
         }
         return count;
+    }
+
+    @Override
+    public void setPrimaryItem(ViewGroup container, int position, Object object) {
+        if(fragment != object){
+            fragment = (Fragment) object;
+        }
+        super.setPrimaryItem(container, position, object);
+    }
+
+    public Fragment getCurrentFragment() {
+        return fragment;
     }
 }
