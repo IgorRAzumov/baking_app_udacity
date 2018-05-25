@@ -33,4 +33,8 @@
     <string name="ingredient_card_quantity_label">Quantity :</string>
     <string name="title_itemf_list">fdfsd</string>
     <string name="title_itemf_detail">Itemf Detail</string>
+    <string name="fragment_player_recipe_image_desc">recipe image</string>
+    <string name="step_text_key">step-text-key</string>
+    <string name="step_media_key">step-media-key</string>
+    <string name="player_fragment_tag">player-fragment-tag</string>
 </resources>

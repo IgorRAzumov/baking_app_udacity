@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 
 import java.util.Objects;
 
@@ -13,12 +14,11 @@ import butterknife.BindView;
 import udacity.com.baking_app.R;
 import udacity.com.baking_app.adapters.RecipeDetailPageAdapter;
 import udacity.com.baking_app.data.Recipe;
+import udacity.com.baking_app.data.StepMedia;
 
 
-public class RecipeDetailFragment extends BaseFragment
-        implements RecipeStepFragment.OnFragmentInteractionListener {
+public class RecipeDetailFragment extends BaseFragment {
     public static final String TAG = RecipeDetailFragment.class.getCanonicalName();
-
     @BindView(R.id.vp_fragment_recipe_detail)
     ViewPager recipeViewPager;
 
@@ -74,6 +74,7 @@ public class RecipeDetailFragment extends BaseFragment
     @Override
     protected void initUi() {
         initViewPager();
+        showMedia();
     }
 
     @Override
@@ -82,13 +83,25 @@ public class RecipeDetailFragment extends BaseFragment
         fragmentInteractionListener = null;
     }
 
-
-    public void showFullScreenMode() {
-        Fragment fragment = recipeDetailAdapter.getCurrentFragment();
+    private void showMedia() {
+        Fragment fragment = getChildFragmentManager()
+                .findFragmentByTag(getString(R.string.player_fragment_tag));
         if (fragment == null) {
             return;
         }
-        ((RecipeStepFragment) fragment).showFullscreenMode();
+        ((PlayerFragment) fragment).initMedia(
+                (viewPagerPosition != RecipeDetailPageAdapter.INGREDIENTS_POSITION)
+                        ? null
+                        : StepMedia.initStepMedia(
+                        recipeDetailAdapter.getRecipeDetail(viewPagerPosition)));
+    }
+
+    public void showFullScreenMode() {
+        Fragment fragment = recipeDetailAdapter.getCurrentFragment();
+        if (fragment != null) {
+            return;
+        }
+        //  ((RecipeStepFragment) fragment).showFullscreenMode();
     }
 
 
@@ -97,7 +110,7 @@ public class RecipeDetailFragment extends BaseFragment
         if (fragment == null) {
             return;
         }
-        ((RecipeStepFragment) fragment).showDefaultMode();
+        //  ((RecipeStepFragment) fragment).showDefaultMode();
 
     }
 
@@ -115,28 +128,18 @@ public class RecipeDetailFragment extends BaseFragment
     }
 
 
-
     @NonNull
     private ViewPager.OnPageChangeListener createViewPagerListener() {
         return new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                System.out.println(position);
             }
 
             @Override
             public void onPageSelected(int position) {
-            /*    if (position != ingredientsFragmentPosition) {
-                    ((RecipeStepFragment) recipeDetailAdapter.getItem(position))
-                            .imVisibleNow();
-                }*/
-/*
-                if (viewPagerPosition != ingredientsFragmentPosition) {
-                    ((RecipeStepFragment) recipeDetailAdapter.getItem(viewPagerPosition))
-                            .imHiddenNow();
-                }*/
-
                 viewPagerPosition = position;
+                showMedia();
+                Log.e(RecipeDetailFragment.TAG, String.valueOf(position));
             }
 
             @Override
@@ -149,15 +152,6 @@ public class RecipeDetailFragment extends BaseFragment
 
     public int getRecipeDetailPosition() {
         return recipeViewPager.getCurrentItem();
-    }
-
-    public boolean isCurrentItemContainsVideo() {
-        boolean isContain = false;
-        Fragment fragment = recipeDetailAdapter.getCurrentFragment();
-        if (fragment != null && fragment instanceof RecipeStepFragment) {
-            isContain = ((RecipeStepFragment) fragment).isContainsVideo();
-        }
-        return isContain;
     }
 
     public void setCurrentDetailItem(int recipeDetailPosition) {

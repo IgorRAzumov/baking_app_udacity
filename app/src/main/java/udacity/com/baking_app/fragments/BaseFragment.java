@@ -30,7 +30,7 @@ public abstract class BaseFragment extends Fragment {
 
     protected abstract int getFragmentLayout();
 
-    protected abstract void initUi();
+    protected  void initUi(){}
 
     @Override
     public void onDestroyView() {

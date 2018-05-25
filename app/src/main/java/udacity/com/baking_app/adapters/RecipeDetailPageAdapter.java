@@ -18,11 +18,11 @@ import udacity.com.baking_app.fragments.IngredientsFragment;
 import udacity.com.baking_app.fragments.RecipeStepFragment;
 
 public class RecipeDetailPageAdapter extends FragmentStatePagerAdapter {
-    private static final int INGREDIENTS_POSITION = 0;
+    public static final int INGREDIENTS_POSITION = 0;
     private static final int STEP_POSITION_OFFSET = 1;
 
     private final String ingredientKey;
-    private final String stepKey;
+    private final String stepTextKey;
 
     private Fragment fragment;
     private Recipe recipe;
@@ -31,7 +31,7 @@ public class RecipeDetailPageAdapter extends FragmentStatePagerAdapter {
         super(fm);
         this.recipe = recipe;
         this.ingredientKey = context.getString(R.string.ingredients_key);
-        this.stepKey = context.getString(R.string.step_key);
+        this.stepTextKey = context.getString(R.string.step_text_key);
     }
 
     @Override
@@ -45,8 +45,8 @@ public class RecipeDetailPageAdapter extends FragmentStatePagerAdapter {
                 break;
             }
             default: {
-                bundle.putParcelable(stepKey,
-                        (recipe.getSteps().get(position - STEP_POSITION_OFFSET)));
+                bundle.putString(stepTextKey,
+                        (recipe.getSteps().get(position - STEP_POSITION_OFFSET).getDescription()));
                 fragment = RecipeStepFragment.newInstance(bundle);
             }
         }
@@ -67,7 +67,7 @@ public class RecipeDetailPageAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public void setPrimaryItem(ViewGroup container, int position, Object object) {
-        if(fragment != object){
+        if (fragment != object) {
             fragment = (Fragment) object;
         }
         super.setPrimaryItem(container, position, object);
@@ -75,5 +75,12 @@ public class RecipeDetailPageAdapter extends FragmentStatePagerAdapter {
 
     public Fragment getCurrentFragment() {
         return fragment;
+    }
+
+    public Step getRecipeDetail(int viewPagerPosition) {
+        //     Process: udacity.com.baking_app, PID: 3925
+        //                  java.lang.ArrayIndexOutOfBoundsException: length=12; index=-1
+        //
+        return recipe.getSteps().get(viewPagerPosition - STEP_POSITION_OFFSET);
     }
 }

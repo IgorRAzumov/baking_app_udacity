@@ -7,43 +7,15 @@
     android:layout_height="match_parent"
     android:keepScreenOn="true"
     android:orientation="vertical"
-    tools:context=".fragments.RecipeStepFragment"
-
-    android:fitsSystemWindows="true">
-
-    <FrameLayout
-        android:id="@+id/fl_fragment_recipe_step_media_container"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="3"
-
-        android:fitsSystemWindows="true">
-
-        <com.google.android.exoplayer2.ui.SimpleExoPlayerView
-            android:id="@+id/plv_fragment_recipe_step_player_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <ImageView
-            android:id="@+id/iv_fragment_recipe_step_default_image"
-            android:layout_width="match_parent"
-            android:layout_height="250dp"
-            android:contentDescription="@string/recipe_card_image_description"
-            android:scaleType="fitXY"
-            android:src="@drawable/baking_default_image"
-            android:visibility="gone" />
-    </FrameLayout>
+    tools:context=".fragments.RecipeStepFragment">
 
     <android.support.v7.widget.CardView
         android:id="@+id/cv_fragment_recipe_step_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-
         app:cardCornerRadius="5dp"
-        app:cardElevation="3dp"
-
-      android:fitsSystemWindows="true">
+        app:cardElevation="3dp">
 
         <TextView
             android:id="@+id/tv_fragment_recipe_step_description"
@@ -52,7 +24,7 @@
             android:layout_margin="8dp"
             android:gravity="center"
             android:text="@string/padding_new_text"
-            tools:text="dsfdsfsdf" />
+             />
     </android.support.v7.widget.CardView>
 
     <View
