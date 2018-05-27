@@ -96,7 +96,7 @@ public class PlayerFragment extends BaseFragment {
     @Override
     public void onPause() {
         super.onPause();
-        if (Util.SDK_INT <= 23 && player != null ) {
+        if (Util.SDK_INT <= 23 && player != null) {
             releasePlayer();
         }
     }
@@ -109,12 +109,22 @@ public class PlayerFragment extends BaseFragment {
         }
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        thumbImageTarget = null;
+    }
+
     private void initMedia() {
-        if (stepMedia == null || !stepMedia.containsVideo()) {
-            showDefaultImage();
-        } else {
+        if(player != null){
+            releasePlayer();
+        }
+
+        if (stepMedia != null && stepMedia.containsVideo()) {
             showPlayer();
             initPlayer();
+        } else {
+            showDefaultImage();
         }
     }
 

@@ -6,7 +6,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 
 import java.util.Objects;
 
@@ -56,6 +55,7 @@ public class RecipeDetailFragment extends BaseFragment {
         if (context != null) {
             Bundle bundle = Objects.requireNonNull(getArguments())
                     .getBundle(getString(R.string.bundle_fragment_params_key));
+
             String recipeKey = getString(R.string.recipe_key);
             Recipe recipe = Objects.requireNonNull(bundle).getParcelable(recipeKey);
             viewPagerPosition = bundle
@@ -90,10 +90,9 @@ public class RecipeDetailFragment extends BaseFragment {
             return;
         }
         ((PlayerFragment) fragment).initMedia(
-                (viewPagerPosition != RecipeDetailPageAdapter.INGREDIENTS_POSITION)
+                (viewPagerPosition == RecipeDetailPageAdapter.INGREDIENTS_POSITION)
                         ? null
-                        : StepMedia.initStepMedia(
-                        recipeDetailAdapter.getRecipeDetail(viewPagerPosition)));
+                        : StepMedia.initStepMedia(recipeDetailAdapter.getRecipeDetail(viewPagerPosition)));
     }
 
     public void showFullScreenMode() {
@@ -139,12 +138,10 @@ public class RecipeDetailFragment extends BaseFragment {
             public void onPageSelected(int position) {
                 viewPagerPosition = position;
                 showMedia();
-                Log.e(RecipeDetailFragment.TAG, String.valueOf(position));
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
-
             }
         };
     }

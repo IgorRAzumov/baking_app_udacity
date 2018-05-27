@@ -18,6 +18,7 @@ import udacity.com.baking_app.widgets.SpacingItemDecorator;
 
 
 public class RecipeContentFragment extends BaseFragment {
+    public static final String TAG = RecipeContentFragment.class.getCanonicalName();
     @BindView(R.id.rv_fragment_recipe_content)
     RecyclerView contentRecycler;
 
@@ -91,7 +92,8 @@ public class RecipeContentFragment extends BaseFragment {
                 new RecipeContentAdapter.RecyclerViewCallback() {
                     @Override
                     public void onRecipeDetailItemClick(Recipe recipe, int selectedStepPosition) {
-                        fragmentInteractionListener.onRecipeContentItemClick(recipe, selectedStepPosition);
+                        fragmentInteractionListener
+                                .onRecipeContentItemClick(recipe, selectedStepPosition);
                     }
                 });
     }

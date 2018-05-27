@@ -17,5 +17,6 @@
         android:layout_height="match_parent"
         android:contentDescription="@string/fragment_player_recipe_image_desc"
         android:scaleType="fitXY"
-        android:src="@drawable/baking_default_image" />
+        android:src="@drawable/baking_default_image"
+        android:visibility="gone"/>
 </FrameLayout>

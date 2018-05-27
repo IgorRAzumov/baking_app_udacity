@@ -17,7 +17,6 @@ import udacity.com.baking_app.R;
 import udacity.com.baking_app.data.Recipe;
 import udacity.com.baking_app.fragments.RecipeContentFragment;
 import udacity.com.baking_app.fragments.RecipeDetailFragment;
-import udacity.com.baking_app.fragments.RecipeStepFragment;
 import udacity.com.baking_app.utils.PreferencesUtil;
 
 
@@ -30,26 +29,30 @@ public class RecipeActivity extends AppCompatActivity
     private boolean twoPane;
     private int recipeContentPosition;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe);
         ButterKnife.bind(this);
 
-        initToolbar();
         twoPane = checkTwoPane();
 
-        if (savedInstanceState == null) {
-            addRecipeContentFragment();
-
-            if (twoPane) {
-                addRecipeDetailFragment(R.id.fl_activity_recipe_detail_container);
-            }
-        } else {
+        if (savedInstanceState != null) {
             recipeContentPosition = savedInstanceState
                     .getInt(getString(R.string.recipe_content_position_key));
         }
 
+        initUi();
+    }
+
+    private void initUi() {
+        initToolbar();
+        addRecipeContentFragment();
+
+        if (twoPane) {
+            addRecipeDetailFragment(R.id.fl_activity_recipe_detail_container);
+        }
     }
 
     @Override
@@ -111,25 +114,53 @@ public class RecipeActivity extends AppCompatActivity
     }
 
     private void addRecipeContentFragment() {
-        getSupportFragmentManager()
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        Fragment recipeContentFragment = getRecipeContentFragment(fragmentManager);
+        fragmentManager
                 .beginTransaction()
-                .replace(R.id.fl_activity_recipe_main_container,
-                        RecipeContentFragment.newInstance(getRecipeFragmentBundle()),
-                        RecipeStepFragment.TAG)
+                .replace(R.id.fl_activity_recipe_main_container, recipeContentFragment,
+                        RecipeContentFragment.TAG)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .commit();
     }
 
-    private void addRecipeDetailFragment(int containerId) {
-        Bundle bundle = getRecipeFragmentBundle();
-        bundle.putInt(getString(R.string.recipe_content_position_key), recipeContentPosition);
+    private Fragment getRecipeContentFragment(FragmentManager fragmentManager) {
+        Fragment recipeContentFragment = fragmentManager
+                .findFragmentByTag(RecipeContentFragment.TAG);
+        if (recipeContentFragment == null) {
+            recipeContentFragment = RecipeContentFragment.newInstance(getRecipeFragmentBundle());
+        } else {
 
-        getSupportFragmentManager()
+            fragmentManager.beginTransaction().remove(recipeContentFragment).commit();
+            fragmentManager.executePendingTransactions();
+        }
+        return recipeContentFragment;
+    }
+
+    private void addRecipeDetailFragment(int containerId) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        Fragment recipeDetailFragment = getRecipeDetailFragment(fragmentManager);
+
+        fragmentManager
                 .beginTransaction()
-                .replace(containerId,
-                        RecipeDetailFragment.newInstance(bundle), RecipeDetailFragment.TAG)
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                .replace(containerId, recipeDetailFragment, RecipeDetailFragment.TAG)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .commit();
+    }
+
+    private Fragment getRecipeDetailFragment(FragmentManager fragmentManager) {
+        Fragment recipeDetailFragment = fragmentManager
+                .findFragmentByTag(RecipeDetailFragment.TAG);
+
+        if (recipeDetailFragment == null) {
+            Bundle bundle = getRecipeFragmentBundle();
+            bundle.putInt(getString(R.string.recipe_content_position_key), recipeContentPosition);
+            recipeDetailFragment = RecipeDetailFragment.newInstance(bundle);
+        } else {
+            fragmentManager.beginTransaction().remove(recipeDetailFragment).commit();
+            fragmentManager.executePendingTransactions();
+        }
+        return recipeDetailFragment;
     }
 
     private void replaceContentFragmentWithDetailFragment(int recipeContentPosition) {
@@ -137,13 +168,15 @@ public class RecipeActivity extends AppCompatActivity
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         Fragment fragment = fragmentManager.findFragmentByTag(RecipeDetailFragment.TAG);
+
         if (fragment == null || !(fragment instanceof RecipeDetailFragment)) {
             addRecipeDetailFragment(R.id.fl_activity_recipe_main_container);
         } else {
             ((RecipeDetailFragment) fragment).setCurrentDetailItem(recipeContentPosition);
+
             fragmentManager
                     .beginTransaction()
-                    .replace(R.id.fl_activity_recipe_main_container, fragment)
+                    .replace(R.id.fl_activity_recipe_main_container, getRecipeDetailFragment(fragmentManager))
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                     .commit();
         }
