@@ -92,6 +92,7 @@ public class RecipeContentFragment extends BaseFragment {
                 new RecipeContentAdapter.RecyclerViewCallback() {
                     @Override
                     public void onRecipeDetailItemClick(Recipe recipe, int selectedStepPosition) {
+
                         fragmentInteractionListener
                                 .onRecipeContentItemClick(recipe, selectedStepPosition);
                     }

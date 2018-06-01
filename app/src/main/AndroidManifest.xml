@@ -18,6 +18,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="udacity.com.baking_app.activities.RecipesListActivity" />
         </activity>
+
         <activity android:name=".activities.RecipesListActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -40,6 +41,7 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/recipe_ingridients_widget_info" />
         </receiver>
+
     </application>
 
 </manifest>

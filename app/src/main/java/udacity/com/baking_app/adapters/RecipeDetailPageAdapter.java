@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ import udacity.com.baking_app.data.Step;
 import udacity.com.baking_app.fragments.IngredientsFragment;
 import udacity.com.baking_app.fragments.RecipeStepFragment;
 
-public class RecipeDetailPageAdapter extends FragmentStatePagerAdapter {
+public class RecipeDetailPageAdapter extends FragmentPagerAdapter {
     public static final int INGREDIENTS_POSITION = 0;
     private static final int STEP_POSITION_OFFSET = 1;
 
@@ -78,9 +78,6 @@ public class RecipeDetailPageAdapter extends FragmentStatePagerAdapter {
     }
 
     public Step getRecipeDetail(int viewPagerPosition) {
-        //     Process: udacity.com.baking_app, PID: 3925
-        //                  java.lang.ArrayIndexOutOfBoundsException: length=12; index=-1
-        //
         return recipe.getSteps().get(viewPagerPosition - STEP_POSITION_OFFSET);
     }
 }

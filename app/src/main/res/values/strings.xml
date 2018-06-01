@@ -44,4 +44,7 @@
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
+    <string name="title_itemsdf_list">Itemssdf</string>
+    <string name="title_itemsdf_detail">Itemsdf Detail</string>
+    <string name="was_two_pane_key">was-two-pane-key</string>
 </resources>

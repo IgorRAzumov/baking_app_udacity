@@ -11,7 +11,6 @@ import udacity.com.baking_app.R;
 
 
 public class RecipeStepFragment extends BaseFragment {
-    public static final String TAG = RecipeStepFragment.class.getCanonicalName();
     @BindView(R.id.tv_fragment_recipe_step_description)
     TextView stepDescriptionText;
 

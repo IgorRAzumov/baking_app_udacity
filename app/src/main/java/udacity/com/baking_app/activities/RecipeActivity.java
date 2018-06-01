@@ -27,6 +27,8 @@ public class RecipeActivity extends AppCompatActivity
     Toolbar toolbar;
 
     private boolean twoPane;
+    private boolean wasTwoPane;
+
     private int recipeContentPosition;
 
 
@@ -36,19 +38,25 @@ public class RecipeActivity extends AppCompatActivity
         setContentView(R.layout.activity_recipe);
         ButterKnife.bind(this);
 
-        twoPane = checkTwoPane();
+        checkTwoPane(wasTwoPane);
 
         if (savedInstanceState != null) {
             recipeContentPosition = savedInstanceState
                     .getInt(getString(R.string.recipe_content_position_key));
+            wasTwoPane = savedInstanceState.getBoolean(getString(R.string.was_two_pane_key));
         }
 
+        checkTwoPane(wasTwoPane);
         initUi();
     }
 
     private void initUi() {
         initToolbar();
-        addRecipeContentFragment();
+        if (!wasTwoPane) {
+            addRecipeContentFragment();
+        }else if(!twoPane){
+           replaceContentFragmentWithDetailFragment(recipeContentPosition);
+        }
 
         if (twoPane) {
             addRecipeDetailFragment(R.id.fl_activity_recipe_detail_container);
@@ -58,6 +66,7 @@ public class RecipeActivity extends AppCompatActivity
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putInt(getString(R.string.recipe_content_position_key), recipeContentPosition);
+        outState.putBoolean(getString(R.string.was_two_pane_key), wasTwoPane);
         super.onSaveInstanceState(outState);
     }
 
@@ -96,8 +105,9 @@ public class RecipeActivity extends AppCompatActivity
         }
     }
 
-    private boolean checkTwoPane() {
-        return findViewById(R.id.fl_activity_recipe_detail_container) != null;
+    private void checkTwoPane(boolean wasTwoPane) {
+        twoPane = findViewById(R.id.fl_activity_recipe_detail_container) != null;
+        this.wasTwoPane = wasTwoPane;
     }
 
     @NonNull
@@ -173,7 +183,6 @@ public class RecipeActivity extends AppCompatActivity
             addRecipeDetailFragment(R.id.fl_activity_recipe_main_container);
         } else {
             ((RecipeDetailFragment) fragment).setCurrentDetailItem(recipeContentPosition);
-
             fragmentManager
                     .beginTransaction()
                     .replace(R.id.fl_activity_recipe_main_container, getRecipeDetailFragment(fragmentManager))
@@ -205,68 +214,3 @@ public class RecipeActivity extends AppCompatActivity
                 : fragment.getRecipeDetailPosition();
     }
 }
-
-/*
-*
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        decorView = getWindow().getDecorView();
-        decorView.setOnSystemUiVisibilityChangeListener(createSystemUiVisabilytyChangeListener());
-
- }
-
-    private View.OnSystemUiVisibilityChangeListener createSystemUiVisabilytyChangeListener() {
-        return new View.OnSystemUiVisibilityChangeListener() {
-            @Override
-            public void onSystemUiVisibilityChange(int visibility) {
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                Fragment fragment = fragmentManager.findFragmentByTag(RecipeDetailFragment.TAG);
-                if (fragment == null) {
-                    return;
-                }
-                RecipeDetailFragment recipeDetailFragment = (RecipeDetailFragment) fragment;
-
-                if (!recipeDetailFragment.isCurrentItemContainsVideo()) {
-                    return;
-                }
-
-                if ((visibility & View.SYSTEM_UI_FLAG_FULLSCREEN) == 0) {
-                    showSystemUI();
-                    recipeDetailFragment.showDefaultMode();
-                } else {
-                    hideSystemUI();
-                    recipeDetailFragment.showFullScreenMode();
-                }
-            }
-        };
-    }
-
-    private void hideSystemUI() {
-
-        decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                | View.SYSTEM_UI_FLAG_FULLSCREEN);
-
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.hide();
-        }
-    }
-
-    private void showSystemUI() {
-
-        decorView.setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.show();
-        }
-    }
-*
-*
-* */

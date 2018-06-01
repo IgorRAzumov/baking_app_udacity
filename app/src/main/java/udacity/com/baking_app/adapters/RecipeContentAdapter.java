@@ -18,20 +18,27 @@ import udacity.com.baking_app.data.Step;
 public class RecipeContentAdapter extends RecyclerView.Adapter<RecipeContentAdapter.ViewHolder> {
     private static final int INGREDIENTS_POSITION = 0;
     private static final int STEP_POSITION_OFFSET = 1;
+    private static final int N0_POSITION = -1;
 
     private final Recipe recipe;
     private final RecyclerViewCallback recyclerViewCallback;
-
     private final View.OnClickListener itemClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            recyclerViewCallback.onRecipeDetailItemClick(recipe, (int) view.getTag());
+            selectedPosition= (int) view.getTag();
+            notifyDataSetChanged();
+            recyclerViewCallback.onRecipeDetailItemClick(recipe, selectedPosition);
+
         }
     };
+
+    private int selectedPosition;
+
 
     public RecipeContentAdapter(@NonNull Recipe recipe, RecyclerViewCallback recyclerViewCallback) {
         this.recipe = recipe;
         this.recyclerViewCallback = recyclerViewCallback;
+        selectedPosition = N0_POSITION;
     }
 
     @NonNull
@@ -55,6 +62,8 @@ public class RecipeContentAdapter extends RecyclerView.Adapter<RecipeContentAdap
                 holder.titleTextView.setText(step.getShortDescription());
                 holder.itemView.setTag(position);
             }
+
+            holder.itemView.setSelected((position != selectedPosition));
             holder.itemView.setOnClickListener(itemClickListener);
         }
 
