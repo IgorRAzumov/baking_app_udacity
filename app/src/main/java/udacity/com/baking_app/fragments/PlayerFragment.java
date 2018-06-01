@@ -185,9 +185,10 @@ public class PlayerFragment extends BaseFragment {
         thumbImageTarget = createThumbImageTarget();
         Picasso.with(getContext())
                 .load(thumbnailUrl)
-                .fit()
+                .error(R.drawable.generic)
                 .into(thumbImageTarget);
     }
+
 
     @NonNull
     private Target createThumbImageTarget() {
