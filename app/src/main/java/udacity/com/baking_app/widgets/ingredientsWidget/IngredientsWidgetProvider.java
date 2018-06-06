@@ -40,11 +40,33 @@ public class IngredientsWidgetProvider extends AppWidgetProvider {
         }
     }
 
+
+    @Override
+    public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+        UpdateIngredientsWidgetService.startActionUpdateIngredientsWidgets(context);
+    }
+
+    @Override
+    public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager,
+                                          int appWidgetId, Bundle newOptions) {
+        UpdateIngredientsWidgetService.startActionUpdateIngredientsWidgets(context);
+        super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions);
+    }
+
+
+    @Override
+    public void onEnabled(Context context) {
+    }
+
+    @Override
+    public void onDisabled(Context context) {
+    }
+
     private static void setOnClickListener(Context context, RemoteViews views) {
         Intent intent = new Intent(context, RecipesListActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
-        views.setPendingIntentTemplate(R.id.lly_recipe_ingredients_widget_container, pendingIntent);
+        views.setPendingIntentTemplate(R.id.lv_recipe_ingredients_widget_list, pendingIntent);
 
     }
 
@@ -62,29 +84,5 @@ public class IngredientsWidgetProvider extends AppWidgetProvider {
         views.setViewVisibility(R.id.tv_recipe_ingredients_widget_recipe_name, View.GONE);
         views.setViewVisibility(R.id.tv_recipe_ingredients_widget_no_ingredients_text, View.VISIBLE);
     }
-
-    @Override
-    public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        UpdateIngredientsWidgetService.startActionUpdateIngredientsWidgets(context);
-    }
-
-    @Override
-    public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager,
-                                          int appWidgetId, Bundle newOptions) {
-        UpdateIngredientsWidgetService.startActionUpdateIngredientsWidgets(context);
-        super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions);
-    }
-
-
-    @Override
-    public void onEnabled(Context context) {
-        // Enter relevant functionality for when the first widget is created
-    }
-
-    @Override
-    public void onDisabled(Context context) {
-    }
-
-
 }
 
