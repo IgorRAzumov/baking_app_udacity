@@ -19,8 +19,8 @@ import udacity.com.baking_app.R;
 import udacity.com.baking_app.data.Recipe;
 
 public class RecipesListAdapter extends RecyclerView.Adapter<RecipesListAdapter.RecipesViewHolder> {
-    private List<Recipe> recipesList;
-    private RecyclerViewCallback recyclerViewCallback;
+    private final List<Recipe> recipesList;
+    private final RecyclerViewCallback recyclerViewCallback;
     //private
 
     private final View.OnClickListener itemClickListener = new View.OnClickListener() {

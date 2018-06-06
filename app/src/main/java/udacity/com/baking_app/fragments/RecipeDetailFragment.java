@@ -25,7 +25,6 @@ public class RecipeDetailFragment extends BaseFragment {
     private RecipeDetailPageAdapter recipeDetailAdapter;
     private OnFragmentInteractionListener fragmentInteractionListener;
 
-
     public static Fragment newInstance(@NonNull Bundle bundle) {
         Fragment fragment = new RecipeDetailFragment();
         Bundle args = new Bundle();
@@ -74,19 +73,17 @@ public class RecipeDetailFragment extends BaseFragment {
     @Override
     protected void initUi() {
         initViewPager();
-    }
-
-    @Override
-    protected void checkSavedInstanceState(Bundle savedInstanceState) {
-        if(savedInstanceState == null){
-            showMedia();
-        }
+        showMedia();
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
         fragmentInteractionListener = null;
+    }
+
+    public void setCurrentDetailItem(int recipeDetailPosition) {
+        recipeViewPager.setCurrentItem(recipeDetailPosition);
     }
 
     private void showMedia() {
@@ -117,6 +114,8 @@ public class RecipeDetailFragment extends BaseFragment {
     @NonNull
     private ViewPager.OnPageChangeListener createViewPagerListener() {
         return new ViewPager.OnPageChangeListener() {
+
+
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
             }
@@ -134,17 +133,8 @@ public class RecipeDetailFragment extends BaseFragment {
         };
     }
 
-
-    public int getRecipeDetailPosition() {
-        return recipeViewPager.getCurrentItem();
-    }
-
-    public void setCurrentDetailItem(int recipeDetailPosition) {
-        recipeViewPager.setCurrentItem(recipeDetailPosition);
-    }
-
-
     public interface OnFragmentInteractionListener {
         void changedContent(int position);
+
     }
 }

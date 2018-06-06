@@ -20,7 +20,7 @@ public class ListWidgetService extends RemoteViewsService {
 }
 
 class ListViewRemoteFactory implements RemoteViewsService.RemoteViewsFactory {
-    private Context context;
+    private final Context context;
     private final ArrayList<Ingredient> ingredientsList;
 
      ListViewRemoteFactory(Context applicationContext) {

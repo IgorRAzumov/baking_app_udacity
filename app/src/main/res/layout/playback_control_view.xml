@@ -1,37 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="bottom"
-    android:background="#CC000000"
+    android:background="@color/control_playback_view_background"
     android:layoutDirection="ltr"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:ignore="Overdraw">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="horizontal"
-        android:paddingTop="4dp">
+        android:paddingTop="@dimen/control_playback_view_padding_top">
 
         <ImageButton
             android:id="@id/exo_prev"
-            style="@style/ExoMediaButton.Previous" />
+            style="@style/ExoMediaButton.Previous"
+            android:contentDescription="@string/player_playback_control_previous"/>
 
         <ImageButton
             android:id="@id/exo_play"
-            style="@style/ExoMediaButton.Play" />
+            style="@style/ExoMediaButton.Play"
+            android:contentDescription="@string/player_playback_control_play"/>
 
         <ImageButton
             android:id="@id/exo_pause"
-            style="@style/ExoMediaButton.Pause" />
+            style="@style/ExoMediaButton.Pause"
+            android:contentDescription="@string/player_playback_control_pause" />
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="@dimen/control_playback_lly_margin_top"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
@@ -40,18 +45,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:includeFontPadding="false"
-            android:paddingLeft="4dp"
-            android:paddingRight="4dp"
-            android:textColor="#FFBEBEBE"
-            android:textSize="14sp"
+            android:paddingLeft="@dimen/exo_position_padding"
+            android:paddingRight="@dimen/exo_position_padding"
+            android:textColor="@color/exo_position_text_color"
+            android:textSize="@dimen/exo_position_text_size"
             android:textStyle="bold" />
 
         <com.google.android.exoplayer2.ui.DefaultTimeBar
             android:id="@id/exo_progress"
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="0dp"
-            android:layout_height="32dp"
-            android:layout_weight="1"
+            android:layout_height="@dimen/exo_progress_height"
+            android:layout_weight="@integer/exo_progress_weight"
             android:focusable="false" />
 
         <TextView
@@ -59,10 +64,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:includeFontPadding="false"
-            android:paddingLeft="4dp"
-            android:paddingRight="4dp"
-            android:textColor="#FFBEBEBE"
-            android:textSize="14sp"
+            android:paddingLeft="@dimen/exo_duration_padding"
+            android:paddingRight="@dimen/exo_duration_padding"
+            android:textColor="@color/exo_duration_text_color"
+            android:textSize="@dimen/exo_duration_text_size"
             android:textStyle="bold" />
     </LinearLayout>
 </LinearLayout>

@@ -10,12 +10,11 @@
         android:id="@+id/rv_fragment_ingredients"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="@integer/rv_fragment_ingredients_weight"/>
     <TextView
-        android:id="@+id/tv_fragment_recipe_step_nav_help"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
+        android:layout_margin="@dimen/tv_fragment_recipe_step_nav_help_margin"
         android:gravity="center"
         android:text="@string/fragment_recipe_step_navigate_hlp_text"
         android:textColor="@android:color/holo_blue_dark" />

@@ -3,13 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="5dp"
-    app:elevation="3dp">
+    app:cardCornerRadius="@dimen/ingredient_card_card_corner_radius"
+    app:elevation="@dimen/ingredient_card_card_elevation">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp">
+        android:layout_margin="@dimen/ingredient_card_card_lly_margin">
 
         <TextView
             android:id="@+id/tv_ingredients_card_ingredient_label"
@@ -17,17 +17,14 @@
             android:layout_height="wrap_content"
             android:text="@string/ingredient_card_ingredient_label"
             android:textColor="@android:color/holo_orange_dark"
-
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/tv_ingredients_card_quantity_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/ingredient_card_quantity_label"
             android:textColor="@android:color/holo_red_dark"
-
             app:layout_constraintStart_toStartOf="@+id/tv_ingredients_card_ingredient_label"
             app:layout_constraintTop_toTopOf="@+id/tv_ingredients_card_quantity" />
 
@@ -35,11 +32,10 @@
             android:id="@+id/tv_ingredients_card_ingredient"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="3dp"
-            android:maxLines="3"
+            android:layout_marginEnd="@dimen/tv_ingredients_card_ingredient_margin_end"
+            android:maxLines="@integer/tv_ingredients_card_ingredient_max_lines"
             android:singleLine="false"
             android:textColor="@color/colorAccent"
-
             app:layout_constraintStart_toEndOf="@+id/tv_ingredients_card_ingredient_label"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -47,10 +43,8 @@
             android:id="@+id/tv_ingredients_card_quantity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:maxLines="3"
             android:singleLine="false"
             android:textColor="@color/colorAccent"
-
             app:layout_constraintStart_toStartOf="@+id/tv_ingredients_card_ingredient"
             app:layout_constraintTop_toBottomOf="@+id/tv_ingredients_card_ingredient" />
 
@@ -59,10 +53,8 @@
             android:id="@+id/tv_ingredients_card_measure"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:maxLines="3"
             android:singleLine="false"
             android:textColor="@color/colorAccent"
-
             app:layout_constraintStart_toEndOf="@+id/tv_ingredients_card_quantity"
             app:layout_constraintTop_toBottomOf="@+id/tv_ingredients_card_ingredient" />
     </android.support.constraint.ConstraintLayout>

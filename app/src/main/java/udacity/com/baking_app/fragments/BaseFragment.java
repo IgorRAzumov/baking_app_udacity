@@ -11,7 +11,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 public abstract class BaseFragment extends Fragment {
-    protected final static String BUNDLE_FRAGMENT_PARAMS_KEY = "bundle-fragment-params-key";
+    final static String BUNDLE_FRAGMENT_PARAMS_KEY = "bundle-fragment-params-key";
     private Unbinder unbinder;
 
 

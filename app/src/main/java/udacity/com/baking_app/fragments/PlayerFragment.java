@@ -38,7 +38,7 @@ public class PlayerFragment extends BaseFragment {
     @BindView(R.id.iv_fragment_player_default_image)
     ImageView defaultImageView;
 
-    StepMedia stepMedia;
+    private StepMedia stepMedia;
     private long savedPlayerPosition;
     private boolean playWhenReady;
 

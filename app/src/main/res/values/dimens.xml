@@ -1,17 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="fab_margin">16dp</dimen>
-    <dimen name="app_bar_height">200dp</dimen>
-    <dimen name="item_width">200dp</dimen>
-    <dimen name="text_margin">16dp</dimen>
     <dimen name="material_vertical_port_margin">16dp</dimen>
     <dimen name="recipes_fragment_rv_item_decorator_spacing">5dp</dimen>
-    <dimen name="widget_margin">0dp</dimen>
-    <dimen name="recipes_content_rv_item_decorator_spacing">5dp</dimen>
+    <dimen name="recipes_content_rv_item_decorator_spacing">8dp</dimen>
     <dimen name="ingredients_fragment_rv_item_decorator_spacing">8dp</dimen>
     <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
-    <dimen name="nav_header_vertical_spacing">8dp</dimen>
-    <dimen name="nav_header_height">176dp</dimen>
+    <dimen name="ingredients_item_root_view_margin">8dp</dimen>
+    <dimen name="ingredients_item_ingredient_label_padding">8dp</dimen>
+    <dimen name="tv_ingredients_item_ingredient_padding_top">8dp</dimen>
+    <dimen name="tv_ingredients_item_quantity_label_padding">8dp</dimen>
+    <dimen name="tv_ingredients_item_measure_padding">3dp</dimen>
+    <dimen name="recipe_step_card_card_corner_radius">3dp</dimen>
+    <dimen name="tv_recipe_step_card_title_padding">8dp</dimen>
+    <dimen name="control_playback_view_padding_top">4dp</dimen>
+    <dimen name="control_playback_lly_margin_top">4dp</dimen>
+    <dimen name="exo_position_padding">4dp</dimen>
+    <dimen name="exo_position_text_size">14sp</dimen>
+    <dimen name="exo_progress_height">32dp</dimen>
+    <dimen name="exo_duration_text_size">14sp</dimen>
+    <dimen name="exo_duration_padding">4dp</dimen>
+    <dimen name="ingredient_card_card_corner_radius">5dp</dimen>
+    <dimen name="ingredient_card_card_elevation">3dp</dimen>
+    <dimen name="ingredient_card_card_lly_margin">8dp</dimen>
+    <dimen name="tv_ingredients_card_ingredient_margin_end">3dp</dimen>
+    <dimen name="cv_fragment_recipe_step_content_corner_radius">5dp</dimen>
+    <dimen name="cv_fragment_recipe_step_content_margin">16dp</dimen>
+    <dimen name="cv_fragment_recipe_step_content_elevation">3dp</dimen>
+    <dimen name="tv_fragment_recipe_step_description_margin">8dp</dimen>
+    <dimen name="tv_fragment_recipe_step_nav_help_margin">8dp</dimen>
 </resources>

@@ -8,12 +8,12 @@
         android:name="udacity.com.baking_app.fragments.PlayerFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="5"
+        android:layout_weight="@integer/fr_fragment_recipe_detail_media_player_weight"
         android:tag="@string/player_fragment_tag" />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/vp_fragment_recipe_detail"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="3" />
+        android:layout_weight="@integer/vp_fragment_recipe_detail_weight" />
 </LinearLayout>

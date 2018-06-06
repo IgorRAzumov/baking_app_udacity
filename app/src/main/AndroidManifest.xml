@@ -10,7 +10,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme.NoActionBar">
+        android:theme="@style/AppTheme.NoActionBar"
+        android:fullBackupContent="@xml/backup_descriptor">
         <activity
             android:name=".activities.RecipeActivity"
             android:parentActivityName=".activities.RecipesListActivity">
@@ -39,7 +40,7 @@
 
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/recipe_ingridients_widget_info" />
+                android:resource="@xml/recipe_ingredients_widget_info" />
         </receiver>
 
     </application>

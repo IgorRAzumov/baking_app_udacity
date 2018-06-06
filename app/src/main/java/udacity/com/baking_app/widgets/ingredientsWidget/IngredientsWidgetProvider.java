@@ -23,7 +23,7 @@ public class IngredientsWidgetProvider extends AppWidgetProvider {
 
         Recipe recipe = PreferencesUtil.getRecipe(context);
         if (recipe == null) {
-            showNoSelectedRecipeMessage(context, views);
+            showNoSelectedRecipeMessage(views);
         } else {
             showIngredientsViews(context, views);
             views.setTextViewText(R.id.tv_recipe_ingredients_widget_recipe_name, recipe.getName());
@@ -44,7 +44,7 @@ public class IngredientsWidgetProvider extends AppWidgetProvider {
         Intent intent = new Intent(context, RecipesListActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
-        views.setPendingIntentTemplate(R.id.lv_recipe_ingredients_widget_list, pendingIntent);
+        views.setPendingIntentTemplate(R.id.lly_recipe_ingredients_widget_container, pendingIntent);
 
     }
 
@@ -57,7 +57,7 @@ public class IngredientsWidgetProvider extends AppWidgetProvider {
         views.setRemoteAdapter(R.id.lv_recipe_ingredients_widget_list, adapterIntent);
     }
 
-    private static void showNoSelectedRecipeMessage(Context context, RemoteViews views) {
+    private static void showNoSelectedRecipeMessage(RemoteViews views) {
         views.setViewVisibility(R.id.lv_recipe_ingredients_widget_list, View.GONE);
         views.setViewVisibility(R.id.tv_recipe_ingredients_widget_recipe_name, View.GONE);
         views.setViewVisibility(R.id.tv_recipe_ingredients_widget_no_ingredients_text, View.VISIBLE);

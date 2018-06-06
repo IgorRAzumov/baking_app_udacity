@@ -94,7 +94,7 @@ public class RecipesListFragment extends BaseFragment {
         int spanCount = resources.getInteger(
                 resources.getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE
                         ? R.integer.list_recipes_landscape_span_count
-                        : R.integer.list_recipes_portrait_span_coun);
+                        : R.integer.list_recipes_portrait_span_count);
         int spacingPx = Utils.convertDpToPx(
                 resources.getDimension(R.dimen.recipes_fragment_rv_item_decorator_spacing),
                 resources.getDisplayMetrics().density);
@@ -138,6 +138,7 @@ public class RecipesListFragment extends BaseFragment {
     }
 
 
+    @SuppressWarnings("SameParameterValue")
     private void showMessage(int messageResId, int duration) {
         Context context = getContext();
         if (context != null) {

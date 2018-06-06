@@ -21,6 +21,7 @@ public class RecipeContentFragment extends BaseFragment {
     public static final String TAG = RecipeContentFragment.class.getCanonicalName();
     @BindView(R.id.rv_fragment_recipe_content)
     RecyclerView contentRecycler;
+
     private RecipeContentAdapter recipeContentAdapter;
     private OnFragmentInteractionListener fragmentInteractionListener;
 
@@ -54,7 +55,7 @@ public class RecipeContentFragment extends BaseFragment {
         Recipe recipe = Objects
                 .requireNonNull(recipeStepsBundle).getParcelable(getString(R.string.recipe_key));
         int contentPosition = recipeStepsBundle
-                .getInt(getString(R.string.default_recipe_detail_position_key));
+                .getInt(getString(R.string.recipe_content_position_key));
         createRecipeAdapter(recipe, contentPosition);
     }
 
@@ -90,9 +91,11 @@ public class RecipeContentFragment extends BaseFragment {
         fragmentInteractionListener = null;
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
+    public void setContentPosition(int position) {
+        recipeContentAdapter.setSelectedPosition(position);
+        if (contentRecycler != null) {
+            contentRecycler.scrollToPosition(position);
+        }
     }
 
     private void initContentRecycle() {
@@ -110,7 +113,6 @@ public class RecipeContentFragment extends BaseFragment {
         contentRecycler.scrollToPosition(recipeContentAdapter.getSelectedPosition());
     }
 
-
     private void createRecipeAdapter(Recipe recipe, int contentPosition) {
         recipeContentAdapter = new RecipeContentAdapter(contentPosition, recipe,
                 new RecipeContentAdapter.RecyclerViewCallback() {
@@ -119,17 +121,12 @@ public class RecipeContentFragment extends BaseFragment {
                         recipeContentAdapter.setSelectedPosition(selectedStepPosition);
                         contentRecycler.scrollToPosition(selectedStepPosition);
                         fragmentInteractionListener
-                                .onRecipeContentItemClick(recipe, selectedStepPosition);
+                                .onRecipeContentItemClick(selectedStepPosition);
                     }
                 });
     }
 
-    public void setContentPosition(int position) {
-        recipeContentAdapter.setSelectedPosition(position);
-        contentRecycler.scrollToPosition(position);
-    }
-
     public interface OnFragmentInteractionListener {
-        void onRecipeContentItemClick(Recipe recipe, int selectedStepPosition);
+        void onRecipeContentItemClick(int selectedStepPosition);
     }
 }

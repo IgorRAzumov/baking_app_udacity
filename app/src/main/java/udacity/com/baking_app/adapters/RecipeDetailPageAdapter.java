@@ -25,7 +25,7 @@ public class RecipeDetailPageAdapter extends FragmentPagerAdapter {
     private final String stepTextKey;
 
     private Fragment fragment;
-    private Recipe recipe;
+    private final Recipe recipe;
 
     public RecipeDetailPageAdapter(Context context, FragmentManager fm, @NonNull Recipe recipe) {
         super(fm);
@@ -71,10 +71,6 @@ public class RecipeDetailPageAdapter extends FragmentPagerAdapter {
             fragment = (Fragment) object;
         }
         super.setPrimaryItem(container, position, object);
-    }
-
-    public Fragment getCurrentFragment() {
-        return fragment;
     }
 
     public Step getRecipeDetail(int viewPagerPosition) {
