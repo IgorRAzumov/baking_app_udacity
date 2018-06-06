@@ -8,11 +8,9 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
 
 import udacity.com.baking_app.R;
-import udacity.com.baking_app.data.Ingredient;
+import udacity.com.baking_app.data.Recipe;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -31,27 +29,26 @@ public class PreferencesUtil {
                         context.getResources().getInteger(R.integer.default_recipe_detail_position));
     }
 
-    public static void saveRecipeIngredientList(Context context, List<Ingredient> ingredientList) {
+    public static void saveRecipe(Context context, Recipe recipe) {
         Gson gson = new Gson();
-        String json = gson.toJson(ingredientList);
+        String json = gson.toJson(recipe);
 
         getPreferencesEditor(context)
                 .putString(context.getString(R.string.ingredients_json_key), json)
                 .apply();
     }
 
-    public static ArrayList<Ingredient> getRecipeIngredientList(Context context) {
-        ArrayList<Ingredient> ingredients = new ArrayList<>();
-
+    public static Recipe getRecipe(Context context) {
+        Recipe recipe = null;
         String json = getSharedPreferences(context)
                 .getString(context.getString(R.string.ingredients_json_key), null);
         if (json != null) {
             Gson gson = new Gson();
-            Type type = new TypeToken<ArrayList<Ingredient>>() {
+            Type type = new TypeToken<Recipe>() {
             }.getType();
-            ingredients = gson.fromJson(json, type);
+            recipe = gson.fromJson(json, type);
         }
-        return ingredients;
+        return recipe;
     }
 
 

@@ -74,7 +74,13 @@ public class RecipeDetailFragment extends BaseFragment {
     @Override
     protected void initUi() {
         initViewPager();
-        showMedia();
+    }
+
+    @Override
+    protected void checkSavedInstanceState(Bundle savedInstanceState) {
+        if(savedInstanceState == null){
+            showMedia();
+        }
     }
 
     @Override
@@ -95,24 +101,6 @@ public class RecipeDetailFragment extends BaseFragment {
                         : StepMedia.initStepMedia(recipeDetailAdapter.getRecipeDetail(viewPagerPosition)));
     }
 
-    public void showFullScreenMode() {
-        Fragment fragment = recipeDetailAdapter.getCurrentFragment();
-        if (fragment != null) {
-            return;
-        }
-        //  ((RecipeStepFragment) fragment).showFullscreenMode();
-    }
-
-
-    public void showDefaultMode() {
-        Fragment fragment = recipeDetailAdapter.getCurrentFragment();
-        if (fragment == null) {
-            return;
-        }
-        //  ((RecipeStepFragment) fragment).showDefaultMode();
-
-    }
-
     private void initViewPager() {
         FragmentActivity fragmentActivity = getActivity();
         if (fragmentActivity == null) {
@@ -126,7 +114,6 @@ public class RecipeDetailFragment extends BaseFragment {
 
     }
 
-
     @NonNull
     private ViewPager.OnPageChangeListener createViewPagerListener() {
         return new ViewPager.OnPageChangeListener() {
@@ -138,6 +125,7 @@ public class RecipeDetailFragment extends BaseFragment {
             public void onPageSelected(int position) {
                 viewPagerPosition = position;
                 showMedia();
+                fragmentInteractionListener.changedContent(position);
             }
 
             @Override
@@ -157,5 +145,6 @@ public class RecipeDetailFragment extends BaseFragment {
 
 
     public interface OnFragmentInteractionListener {
+        void changedContent(int position);
     }
 }

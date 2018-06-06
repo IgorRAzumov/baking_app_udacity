@@ -16,7 +16,7 @@
     <string name="ingredients">Ingredients</string>
     <string name="ingredients_key">ingredients-key</string>
     <string name="step_key">step-key</string>
-    <string name="fragment_recipe_step_navigate_hlp_text">Swiping to the left or right shows the previous or next page</string>
+    <string name="fragment_recipe_step_navigate_hlp_text">Swiping text to the left or right shows the previous or next page</string>
     <string name="padding_new_text">/t</string>
     <string name="recipe_content_position_key">recipe-detail-position-key</string>
     <string name="player_position_key">player-position-key</string>
@@ -46,5 +46,7 @@
     <string name="action_settings">Settings</string>
     <string name="title_itemsdf_list">Itemssdf</string>
     <string name="title_itemsdf_detail">Itemsdf Detail</string>
-    <string name="was_two_pane_key">was-two-pane-key</string>
+    <string name="was_two_pane_key">was-orientation-change-key</string>
+    <string name="back_to_ricepes">back to recipes</string>
+    <string name="baking_time">BACKING TIME</string>
 </resources>

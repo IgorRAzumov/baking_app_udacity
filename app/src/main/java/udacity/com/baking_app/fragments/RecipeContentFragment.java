@@ -21,7 +21,6 @@ public class RecipeContentFragment extends BaseFragment {
     public static final String TAG = RecipeContentFragment.class.getCanonicalName();
     @BindView(R.id.rv_fragment_recipe_content)
     RecyclerView contentRecycler;
-
     private RecipeContentAdapter recipeContentAdapter;
     private OnFragmentInteractionListener fragmentInteractionListener;
 
@@ -54,7 +53,9 @@ public class RecipeContentFragment extends BaseFragment {
                 .requireNonNull(getArguments()).getBundle(getString(R.string.bundle_fragment_params_key));
         Recipe recipe = Objects
                 .requireNonNull(recipeStepsBundle).getParcelable(getString(R.string.recipe_key));
-        createRecipeAdapter(recipe);
+        int contentPosition = recipeStepsBundle
+                .getInt(getString(R.string.default_recipe_detail_position_key));
+        createRecipeAdapter(recipe, contentPosition);
     }
 
     @Override
@@ -63,8 +64,35 @@ public class RecipeContentFragment extends BaseFragment {
     }
 
     @Override
+    protected void checkSavedInstanceState(Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            recipeContentAdapter.setSelectedPosition(savedInstanceState.getInt(
+                    getString(R.string.recipe_content_position_key)));
+        }
+    }
+
+    @Override
     protected void initUi() {
         initContentRecycle();
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putInt(getString(R.string.recipe_content_position_key),
+                recipeContentAdapter.getSelectedPosition());
+        super.onSaveInstanceState(outState);
+
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        fragmentInteractionListener = null;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
     }
 
     private void initContentRecycle() {
@@ -79,24 +107,26 @@ public class RecipeContentFragment extends BaseFragment {
         contentRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
         contentRecycler.addItemDecoration(new SpacingItemDecorator(spanCount, spacingPx, true));
         contentRecycler.setAdapter(recipeContentAdapter);
+        contentRecycler.scrollToPosition(recipeContentAdapter.getSelectedPosition());
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        fragmentInteractionListener = null;
-    }
 
-    private void createRecipeAdapter(Recipe recipe) {
-        recipeContentAdapter = new RecipeContentAdapter(recipe,
+    private void createRecipeAdapter(Recipe recipe, int contentPosition) {
+        recipeContentAdapter = new RecipeContentAdapter(contentPosition, recipe,
                 new RecipeContentAdapter.RecyclerViewCallback() {
                     @Override
                     public void onRecipeDetailItemClick(Recipe recipe, int selectedStepPosition) {
-
+                        recipeContentAdapter.setSelectedPosition(selectedStepPosition);
+                        contentRecycler.scrollToPosition(selectedStepPosition);
                         fragmentInteractionListener
                                 .onRecipeContentItemClick(recipe, selectedStepPosition);
                     }
                 });
+    }
+
+    public void setContentPosition(int position) {
+        recipeContentAdapter.setSelectedPosition(position);
+        contentRecycler.scrollToPosition(position);
     }
 
     public interface OnFragmentInteractionListener {

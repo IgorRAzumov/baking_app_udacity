@@ -1,4 +1,4 @@
-package udacity.com.baking_app.services;
+package udacity.com.baking_app.widgets.ingredientsWidget;
 
 import android.content.Context;
 import android.content.Intent;
@@ -38,7 +38,8 @@ class ListViewRemoteFactory implements RemoteViewsService.RemoteViewsFactory {
        if (ingredientsList.size() != 0) {
             ingredientsList.clear();
         }
-        List<Ingredient> ingredients = PreferencesUtil.getRecipeIngredientList(context);
+
+        List<Ingredient> ingredients = PreferencesUtil.getRecipe(context).getIngredients();
         ingredientsList.addAll(ingredients);
     }
 

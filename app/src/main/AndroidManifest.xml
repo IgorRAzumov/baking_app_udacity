@@ -28,9 +28,9 @@
         </activity>
 
         <service
-            android:name=".services.ListWidgetService"
+            android:name=".widgets.ingredientsWidget.ListWidgetService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
-        <service android:name=".services.UpdateIngredientsWidgetService" />
+        <service android:name=".widgets.ingredientsWidget.UpdateIngredientsWidgetService" />
 
         <receiver android:name=".widgets.ingredientsWidget.IngredientsWidgetProvider">
             <intent-filter>

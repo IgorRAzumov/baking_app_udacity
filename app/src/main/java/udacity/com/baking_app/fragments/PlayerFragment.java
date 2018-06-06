@@ -33,9 +33,9 @@ import udacity.com.baking_app.data.StepMedia;
 
 
 public class PlayerFragment extends BaseFragment {
-    @BindView(R.id.plv_fragment_recipe_player_view)
+    @BindView(R.id.plv_fragment_player_player_view)
     PlayerView playerView;
-    @BindView(R.id.iv_fragment_recipe_step_default_image)
+    @BindView(R.id.iv_fragment_player_default_image)
     ImageView defaultImageView;
 
     StepMedia stepMedia;
@@ -116,10 +116,6 @@ public class PlayerFragment extends BaseFragment {
     }
 
     private void initMedia() {
-        if(player != null){
-            releasePlayer();
-        }
-
         if (stepMedia != null && stepMedia.containsVideo()) {
             showPlayer();
             initPlayer();
@@ -130,7 +126,7 @@ public class PlayerFragment extends BaseFragment {
 
     private void initPlayer() {
         Context context = getContext();
-        if (player == null && context != null) {
+        if (context != null) {
             showVideoThumb();
 
             player = ExoPlayerFactory.newSimpleInstance(
@@ -167,7 +163,7 @@ public class PlayerFragment extends BaseFragment {
 
     private void showDefaultArtwork() {
         playerView.setDefaultArtwork(BitmapFactory.decodeResource(getResources(),
-                R.drawable.generic));
+                R.drawable.default_artwork));
     }
 
     private void showPlayer() {
@@ -185,7 +181,7 @@ public class PlayerFragment extends BaseFragment {
         thumbImageTarget = createThumbImageTarget();
         Picasso.with(getContext())
                 .load(thumbnailUrl)
-                .error(R.drawable.generic)
+                .error(R.drawable.default_artwork)
                 .into(thumbImageTarget);
     }
 
@@ -215,10 +211,16 @@ public class PlayerFragment extends BaseFragment {
         player.release();
         player = null;
         playerView.setPlayer(null);
+        savedPlayerPosition = 0;
+        playWhenReady = false;
     }
 
     public void initMedia(StepMedia stepMedia) {
         this.stepMedia = stepMedia;
+        if (player != null) {
+            releasePlayer();
+
+        }
         initMedia();
     }
 }

@@ -3,20 +3,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragments.PlayerFragment">
 
     <com.google.android.exoplayer2.ui.SimpleExoPlayerView
-        android:id="@+id/plv_fragment_recipe_player_view"
+        android:id="@+id/plv_fragment_player_player_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        app:controller_layout_id="@layout/playback_control_view"/>
 
     <ImageView
-        android:id="@+id/iv_fragment_recipe_step_default_image"
+        android:id="@+id/iv_fragment_player_default_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:contentDescription="@string/fragment_player_recipe_image_desc"
-        android:scaleType="fitXY"
+        android:scaleType="centerCrop"
         android:src="@drawable/baking_default_image"
         android:visibility="gone"/>
 </FrameLayout>

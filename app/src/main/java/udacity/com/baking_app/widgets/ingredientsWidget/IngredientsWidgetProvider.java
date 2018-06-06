@@ -11,8 +11,8 @@ import android.widget.RemoteViews;
 
 import udacity.com.baking_app.R;
 import udacity.com.baking_app.activities.RecipesListActivity;
-import udacity.com.baking_app.services.ListWidgetService;
-import udacity.com.baking_app.services.UpdateIngredientsWidgetService;
+import udacity.com.baking_app.data.Recipe;
+import udacity.com.baking_app.utils.PreferencesUtil;
 
 public class IngredientsWidgetProvider extends AppWidgetProvider {
 
@@ -21,10 +21,15 @@ public class IngredientsWidgetProvider extends AppWidgetProvider {
         RemoteViews views = new RemoteViews(context.getPackageName(),
                 R.layout.recipe_ingredients_widget);
 
-        showIngredientsViews(context, views);
+        Recipe recipe = PreferencesUtil.getRecipe(context);
+        if (recipe == null) {
+            showNoSelectedRecipeMessage(context, views);
+        } else {
+            showIngredientsViews(context, views);
+            views.setTextViewText(R.id.tv_recipe_ingredients_widget_recipe_name, recipe.getName());
+        }
 
         setOnClickListener(context, views);
-
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
 
@@ -69,7 +74,6 @@ public class IngredientsWidgetProvider extends AppWidgetProvider {
         UpdateIngredientsWidgetService.startActionUpdateIngredientsWidgets(context);
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions);
     }
-
 
 
     @Override

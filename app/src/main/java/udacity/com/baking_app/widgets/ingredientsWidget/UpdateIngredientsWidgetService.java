@@ -1,4 +1,4 @@
-package udacity.com.baking_app.services;
+package udacity.com.baking_app.widgets.ingredientsWidget;
 
 import android.app.IntentService;
 import android.appwidget.AppWidgetManager;
@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.support.annotation.Nullable;
 
 import udacity.com.baking_app.R;
-import udacity.com.baking_app.widgets.ingredientsWidget.IngredientsWidgetProvider;
 
 public class UpdateIngredientsWidgetService extends IntentService {
     public static final String ACTION_UPDATE_INGREDIENTS_WIDGET

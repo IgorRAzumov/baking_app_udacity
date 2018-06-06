@@ -18,27 +18,23 @@ import udacity.com.baking_app.data.Step;
 public class RecipeContentAdapter extends RecyclerView.Adapter<RecipeContentAdapter.ViewHolder> {
     private static final int INGREDIENTS_POSITION = 0;
     private static final int STEP_POSITION_OFFSET = 1;
-    private static final int N0_POSITION = -1;
 
+    private int selectedPosition;
     private final Recipe recipe;
     private final RecyclerViewCallback recyclerViewCallback;
     private final View.OnClickListener itemClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            selectedPosition= (int) view.getTag();
-            notifyDataSetChanged();
+            changeSelectedItem((int) view.getTag());
             recyclerViewCallback.onRecipeDetailItemClick(recipe, selectedPosition);
-
         }
     };
 
-    private int selectedPosition;
-
-
-    public RecipeContentAdapter(@NonNull Recipe recipe, RecyclerViewCallback recyclerViewCallback) {
+    public RecipeContentAdapter(int contentPosition, Recipe recipe,
+                                RecyclerViewCallback recyclerViewCallback) {
+        selectedPosition = contentPosition;
         this.recipe = recipe;
         this.recyclerViewCallback = recyclerViewCallback;
-        selectedPosition = N0_POSITION;
     }
 
     @NonNull
@@ -54,19 +50,16 @@ public class RecipeContentAdapter extends RecyclerView.Adapter<RecipeContentAdap
         switch (position) {
             case INGREDIENTS_POSITION: {
                 holder.titleTextView.setText(R.string.ingredients);
-                holder.itemView.setTag(position);
                 break;
             }
             default: {
                 Step step = recipe.getSteps().get(position - STEP_POSITION_OFFSET);
                 holder.titleTextView.setText(step.getShortDescription());
-                holder.itemView.setTag(position);
             }
-
-            holder.itemView.setSelected((position != selectedPosition));
-            holder.itemView.setOnClickListener(itemClickListener);
         }
-
+        holder.itemView.setTag(position);
+        holder.itemView.setSelected((position == selectedPosition));
+        holder.itemView.setOnClickListener(itemClickListener);
     }
 
     @Override
@@ -82,8 +75,26 @@ public class RecipeContentAdapter extends RecyclerView.Adapter<RecipeContentAdap
         return count;
     }
 
+    public int getSelectedPosition() {
+        return selectedPosition;
+    }
+
+    public void setSelectedPosition(int newSelectedPosition) {
+        changeSelectedItem(newSelectedPosition);
+    }
+
     public interface RecyclerViewCallback {
         void onRecipeDetailItemClick(Recipe recipe, int selectedStepPosition);
+    }
+
+    private void changeSelectedItem(int newSelectedPosition) {
+        int lastSelected = selectedPosition;
+        this.selectedPosition = newSelectedPosition;
+        if (lastSelected != selectedPosition) {
+            notifyItemChanged(lastSelected);
+            notifyItemChanged(selectedPosition);
+
+        }
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

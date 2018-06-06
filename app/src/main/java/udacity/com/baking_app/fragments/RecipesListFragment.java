@@ -6,6 +6,7 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.VisibleForTesting;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;
@@ -119,6 +120,7 @@ public class RecipesListFragment extends BaseFragment {
                     showMessage(R.string.error_empty_data, Snackbar.LENGTH_LONG);
                 } else {
                     completeDataLoad(data);
+                    fragmentInteractionListener.onRecipesLoadComplete();
                 }
             }
 
@@ -132,6 +134,7 @@ public class RecipesListFragment extends BaseFragment {
     private void completeDataLoad(List<Recipe> data) {
         progressBar.setVisibility(View.GONE);
         recipesRecycler.setAdapter(createRecipesListAdapter(data));
+
     }
 
 
@@ -155,5 +158,8 @@ public class RecipesListFragment extends BaseFragment {
 
     public interface OnFragmentInteractionListener {
         void onRecipeClick(Recipe recipe);
+
+        @VisibleForTesting
+        void onRecipesLoadComplete();
     }
 }
