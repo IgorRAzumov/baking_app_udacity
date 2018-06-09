@@ -20,12 +20,13 @@ public abstract class BaseFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(getFragmentLayout(), container, false);
         unbinder = ButterKnife.bind(this, view);
-        checkSavedInstanceState(savedInstanceState);
+        checkSavedInstanceStateOnCreateView(savedInstanceState);
         initUi();
         return view;
     }
 
-    protected  void checkSavedInstanceState(Bundle savedInstanceState){
+
+    protected  void checkSavedInstanceStateOnCreateView(Bundle savedInstanceState){
     }
 
     protected abstract int getFragmentLayout();

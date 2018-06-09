@@ -73,7 +73,6 @@ public class RecipeDetailFragment extends BaseFragment {
     @Override
     protected void initUi() {
         initViewPager();
-        showMedia();
     }
 
     @Override
@@ -83,7 +82,11 @@ public class RecipeDetailFragment extends BaseFragment {
     }
 
     public void setCurrentDetailItem(int recipeDetailPosition) {
-        recipeViewPager.setCurrentItem(recipeDetailPosition);
+        viewPagerPosition = recipeDetailPosition;
+        if (recipeViewPager != null) {
+            recipeViewPager.setCurrentItem(viewPagerPosition);
+        }
+
     }
 
     private void showMedia() {
@@ -106,16 +109,14 @@ public class RecipeDetailFragment extends BaseFragment {
         recipeViewPager.setOffscreenPageLimit(getResources()
                 .getInteger(R.integer.recipe_detail_fr_offscreen_page_limit));
         recipeViewPager.setAdapter(recipeDetailAdapter);
-        recipeViewPager.setCurrentItem(viewPagerPosition, false);
         recipeViewPager.addOnPageChangeListener(createViewPagerListener());
+        recipeViewPager.setCurrentItem(viewPagerPosition, false);
 
     }
 
     @NonNull
     private ViewPager.OnPageChangeListener createViewPagerListener() {
         return new ViewPager.OnPageChangeListener() {
-
-
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
             }
@@ -123,8 +124,8 @@ public class RecipeDetailFragment extends BaseFragment {
             @Override
             public void onPageSelected(int position) {
                 viewPagerPosition = position;
-                showMedia();
                 fragmentInteractionListener.changedContent(position);
+                showMedia();
             }
 
             @Override
@@ -135,6 +136,5 @@ public class RecipeDetailFragment extends BaseFragment {
 
     public interface OnFragmentInteractionListener {
         void changedContent(int position);
-
     }
 }

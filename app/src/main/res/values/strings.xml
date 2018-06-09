@@ -11,11 +11,10 @@
     <string name="ingredients_key">ingredients-key</string>
     <string name="fragment_recipe_step_navigate_hlp_text">Swiping text to the left or right shows the previous or next page</string>
     <string name="padding_new_text">/t</string>
-    <string name="recipe_content_position_key">recipe-detail-position-key</string>
+    <string name="recipe_content_position_key">recipe-content-position-key</string>
     <string name="player_position_key">player-position-key</string>
     <string name="player_play_when_ready_key">player-play-when-ready-key</string>
     <string name="recipe_card_image_description">recipe image</string>
-    <string name="pref_default_recipe_detail_position">pref-default-recipe-detail-position</string>
     <string name="ingredients_json_key">ingredients-json-key</string>
     <string name="recipe_no_ingredients_message_text">No selected recipe.Please run app and select recipe</string>
     <string name="ingredient_card_ingredient_label">Ingredient :</string>
@@ -24,9 +23,10 @@
     <string name="step_text_key">step-text-key</string>
     <string name="player_fragment_tag">player-fragment-tag</string>
     <string name="was_two_pane_key">was-orientation-change-key</string>
-    <string name="back_to_ricepes">back to recipes</string>
+    <string name="back_to_recipes">back to recipes</string>
     <string name="baking_time">BAKING TIME</string>
     <string name="player_playback_control_pause">pause</string>
     <string name="player_playback_control_play">play</string>
     <string name="player_playback_control_previous">previous</string>
+    <string name="action_on_widget_list_item_click">action-on-widget-list-item-click</string>
 </resources>

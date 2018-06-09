@@ -8,7 +8,6 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -44,6 +43,7 @@ public class PlayerFragment extends BaseFragment {
 
     private Target thumbImageTarget;
     private SimpleExoPlayer player;
+    private boolean wasReload;
 
     public PlayerFragment() {
 
@@ -55,8 +55,7 @@ public class PlayerFragment extends BaseFragment {
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    protected void checkSavedInstanceStateOnCreateView(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
             Resources resources = getResources();
             savedPlayerPosition = savedInstanceState
@@ -65,38 +64,31 @@ public class PlayerFragment extends BaseFragment {
             playWhenReady = savedInstanceState
                     .getBoolean(getString(R.string.player_play_when_ready_key),
                             resources.getBoolean(R.bool.play_when_ready_default));
-        }
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        if (Util.SDK_INT > 23 && player == null && stepMedia != null) {
-            initMedia();
+            wasReload = true;
         }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (Util.SDK_INT <= 23 && player == null && stepMedia != null) {
-            initMedia();
+        if (player == null && stepMedia != null) {
+            setMedia();
         }
     }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putLong(getString(R.string.player_position_key), savedPlayerPosition);
+        outState.putBoolean(getString(R.string.player_play_when_ready_key), playWhenReady);
         super.onSaveInstanceState(outState);
-        if (player != null) {
-            outState.putLong(getString(R.string.player_position_key), player.getContentPosition());
-            outState.putBoolean(getString(R.string.player_play_when_ready_key), player.getPlayWhenReady());
-        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        if (Util.SDK_INT <= 23 && player != null) {
+        if (player != null) {
+            savedPlayerPosition = player.getContentPosition();
+            playWhenReady = player.getPlayWhenReady();
             releasePlayer();
         }
     }
@@ -104,7 +96,7 @@ public class PlayerFragment extends BaseFragment {
     @Override
     public void onStop() {
         super.onStop();
-        if (Util.SDK_INT > 23 && player != null) {
+        if (player != null) {
             releasePlayer();
         }
     }
@@ -115,7 +107,18 @@ public class PlayerFragment extends BaseFragment {
         thumbImageTarget = null;
     }
 
-    private void initMedia() {
+    public void initMedia(StepMedia stepMedia) {
+        if (wasReload) {
+            wasReload = false;
+        } else {
+            savedPlayerPosition = 0;
+            playWhenReady = false;
+        }
+        this.stepMedia = stepMedia;
+        setMedia();
+    }
+
+    private void setMedia() {
         if (stepMedia != null && stepMedia.containsVideo()) {
             showPlayer();
             initPlayer();
@@ -157,7 +160,6 @@ public class PlayerFragment extends BaseFragment {
             showDefaultArtwork();
         } else {
             loadThumbnail(stepMedia.getThumbnailURL());
-
         }
     }
 
@@ -185,7 +187,6 @@ public class PlayerFragment extends BaseFragment {
                 .into(thumbImageTarget);
     }
 
-
     @NonNull
     private Target createThumbImageTarget() {
         return new Target() {
@@ -211,16 +212,6 @@ public class PlayerFragment extends BaseFragment {
         player.release();
         player = null;
         playerView.setPlayer(null);
-        savedPlayerPosition = 0;
-        playWhenReady = false;
-    }
 
-    public void initMedia(StepMedia stepMedia) {
-        this.stepMedia = stepMedia;
-        if (player != null) {
-            releasePlayer();
-
-        }
-        initMedia();
     }
 }

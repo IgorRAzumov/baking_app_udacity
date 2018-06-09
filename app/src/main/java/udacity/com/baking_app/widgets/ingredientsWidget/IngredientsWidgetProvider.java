@@ -53,6 +53,17 @@ public class IngredientsWidgetProvider extends AppWidgetProvider {
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions);
     }
 
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        super.onReceive(context, intent);
+        String action = intent.getAction();
+        if (action != null && action.equalsIgnoreCase(
+                context.getString(R.string.action_on_widget_list_item_click))) {
+            Intent startActivityIntent = new Intent(context, RecipesListActivity.class);
+            context.startActivity(startActivityIntent);
+        }
+    }
+
 
     @Override
     public void onEnabled(Context context) {
@@ -63,10 +74,11 @@ public class IngredientsWidgetProvider extends AppWidgetProvider {
     }
 
     private static void setOnClickListener(Context context, RemoteViews views) {
-        Intent intent = new Intent(context, RecipesListActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
-        views.setPendingIntentTemplate(R.id.lv_recipe_ingredients_widget_list, pendingIntent);
+        Intent listClickIntent = new Intent(context, IngredientsWidgetProvider.class);
+        listClickIntent.setAction(context.getString(R.string.action_on_widget_list_item_click));
+        PendingIntent listClickPIntent = PendingIntent.getBroadcast(context, 0,
+                listClickIntent, 0);
+        views.setPendingIntentTemplate(R.id.lv_recipe_ingredients_widget_list, listClickPIntent);
 
     }
 

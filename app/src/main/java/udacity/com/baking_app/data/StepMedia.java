@@ -44,7 +44,7 @@ public class StepMedia implements Parcelable {
         dest.writeString(this.thumbnailURL);
     }
 
-    protected StepMedia(Parcel in) {
+    private StepMedia(Parcel in) {
         this.videoUrl = in.readString();
         this.thumbnailURL = in.readString();
     }

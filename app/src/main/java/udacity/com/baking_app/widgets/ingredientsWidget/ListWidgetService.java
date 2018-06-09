@@ -23,7 +23,7 @@ class ListViewRemoteFactory implements RemoteViewsService.RemoteViewsFactory {
     private final Context context;
     private final ArrayList<Ingredient> ingredientsList;
 
-     ListViewRemoteFactory(Context applicationContext) {
+    ListViewRemoteFactory(Context applicationContext) {
         this.context = applicationContext;
         ingredientsList = new ArrayList<>();
     }
@@ -35,7 +35,7 @@ class ListViewRemoteFactory implements RemoteViewsService.RemoteViewsFactory {
 
     @Override
     public void onDataSetChanged() {
-       if (ingredientsList.size() != 0) {
+        if (ingredientsList.size() != 0) {
             ingredientsList.clear();
         }
 
@@ -64,6 +64,8 @@ class ListViewRemoteFactory implements RemoteViewsService.RemoteViewsFactory {
                 String.valueOf(ingredient.getQuantity()));
         remoteViews.setTextViewText(R.id.tv_ingredients_item_measure, ingredient.getMeasure());
 
+        Intent fillInIntent = new Intent();
+        remoteViews.setOnClickFillInIntent(R.id.lly_ingredients_item_root_view, fillInIntent);
         return remoteViews;
     }
 

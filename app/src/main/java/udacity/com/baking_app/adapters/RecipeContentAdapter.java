@@ -26,7 +26,7 @@ public class RecipeContentAdapter extends RecyclerView.Adapter<RecipeContentAdap
         @Override
         public void onClick(View view) {
             changeSelectedItem((int) view.getTag());
-            recyclerViewCallback.onRecipeDetailItemClick(recipe, selectedPosition);
+            recyclerViewCallback.onRecipeDetailItemClick(selectedPosition);
         }
     };
 
@@ -79,17 +79,17 @@ public class RecipeContentAdapter extends RecyclerView.Adapter<RecipeContentAdap
         return selectedPosition;
     }
 
-    public void setSelectedPosition(int newSelectedPosition) {
+    /*public void setSelectedPosition(int newSelectedPosition) {
         changeSelectedItem(newSelectedPosition);
-    }
+    }*/
 
     public interface RecyclerViewCallback {
-        void onRecipeDetailItemClick(Recipe recipe, int selectedStepPosition);
+        void onRecipeDetailItemClick(int selectedStepPosition);
     }
 
-    private void changeSelectedItem(int newSelectedPosition) {
+   public void changeSelectedItem(int newSelectedPosition) {
         int lastSelected = selectedPosition;
-        this.selectedPosition = newSelectedPosition;
+        selectedPosition = newSelectedPosition;
         if (lastSelected != selectedPosition) {
             notifyItemChanged(lastSelected);
             notifyItemChanged(selectedPosition);

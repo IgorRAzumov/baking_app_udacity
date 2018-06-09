@@ -50,26 +50,29 @@ public class RecipeContentFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         Bundle recipeStepsBundle = Objects
                 .requireNonNull(getArguments()).getBundle(getString(R.string.bundle_fragment_params_key));
         Recipe recipe = Objects
                 .requireNonNull(recipeStepsBundle).getParcelable(getString(R.string.recipe_key));
-        int contentPosition = recipeStepsBundle
-                .getInt(getString(R.string.recipe_content_position_key));
+
+        int contentPosition;
+        if (savedInstanceState == null) {
+            contentPosition = recipeStepsBundle
+                    .getInt(getString(R.string.recipe_content_position_key));
+        } else {
+            contentPosition = savedInstanceState.getInt(
+                    getString(R.string.recipe_content_position_key));
+            /* recipeContentAdapter.setSelectedPosition(savedPosition);
+             *//* contentRecycler.scrollToPosition(savedPosition);*/
+        }
         createRecipeAdapter(recipe, contentPosition);
     }
+
 
     @Override
     protected int getFragmentLayout() {
         return R.layout.fragment_recipe_content;
-    }
-
-    @Override
-    protected void checkSavedInstanceState(Bundle savedInstanceState) {
-        if (savedInstanceState != null) {
-            recipeContentAdapter.setSelectedPosition(savedInstanceState.getInt(
-                    getString(R.string.recipe_content_position_key)));
-        }
     }
 
     @Override
@@ -82,7 +85,19 @@ public class RecipeContentFragment extends BaseFragment {
         outState.putInt(getString(R.string.recipe_content_position_key),
                 recipeContentAdapter.getSelectedPosition());
         super.onSaveInstanceState(outState);
+    }
 
+    private void savePositionInStartArguments() {
+        Bundle startBundle = Objects.requireNonNull(getArguments())
+                .getBundle(BUNDLE_FRAGMENT_PARAMS_KEY);
+        Objects.requireNonNull(startBundle).putInt(getString(R.string.recipe_content_position_key),
+                recipeContentAdapter.getSelectedPosition());
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        savePositionInStartArguments();
     }
 
     @Override
@@ -92,7 +107,7 @@ public class RecipeContentFragment extends BaseFragment {
     }
 
     public void setContentPosition(int position) {
-        recipeContentAdapter.setSelectedPosition(position);
+        recipeContentAdapter.changeSelectedItem(position);
         if (contentRecycler != null) {
             contentRecycler.scrollToPosition(position);
         }
@@ -117,8 +132,8 @@ public class RecipeContentFragment extends BaseFragment {
         recipeContentAdapter = new RecipeContentAdapter(contentPosition, recipe,
                 new RecipeContentAdapter.RecyclerViewCallback() {
                     @Override
-                    public void onRecipeDetailItemClick(Recipe recipe, int selectedStepPosition) {
-                        recipeContentAdapter.setSelectedPosition(selectedStepPosition);
+                    public void onRecipeDetailItemClick(int selectedStepPosition) {
+                        recipeContentAdapter.changeSelectedItem(selectedStepPosition);
                         contentRecycler.scrollToPosition(selectedStepPosition);
                         fragmentInteractionListener
                                 .onRecipeContentItemClick(selectedStepPosition);
