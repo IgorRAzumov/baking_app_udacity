@@ -79,10 +79,6 @@ public class RecipeContentAdapter extends RecyclerView.Adapter<RecipeContentAdap
         return selectedPosition;
     }
 
-    /*public void setSelectedPosition(int newSelectedPosition) {
-        changeSelectedItem(newSelectedPosition);
-    }*/
-
     public interface RecyclerViewCallback {
         void onRecipeDetailItemClick(int selectedStepPosition);
     }

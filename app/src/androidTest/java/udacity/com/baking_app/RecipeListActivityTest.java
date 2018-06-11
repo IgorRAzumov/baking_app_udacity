@@ -2,6 +2,7 @@ package udacity.com.baking_app;
 
 import android.support.test.espresso.IdlingRegistry;
 import android.support.test.espresso.IdlingResource;
+import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
@@ -22,6 +23,7 @@ import static android.support.test.espresso.intent.matcher.IntentMatchers.hasCom
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasExtraWithKey;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withParent;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 
 
@@ -31,39 +33,39 @@ public class RecipeListActivityTest {
     private static final String RECIPE_ITEM_BROWNIE = "Brownies";
 
     @Rule
-    public IntentsTestRule<RecipesListActivity> mActivityRule = new IntentsTestRule<>(
+    public IntentsTestRule<RecipesListActivity> activityRule = new IntentsTestRule<>(
             RecipesListActivity.class);
-    private IdlingResource mIdlingResource;
+    private IdlingResource idlingResource;
 
     @Before
     public void registerIdlingResources() {
-        mIdlingResource = mActivityRule.getActivity().getIdlingResource();
-        IdlingRegistry.getInstance().register(mIdlingResource);
+        idlingResource = activityRule.getActivity().getIdlingResource();
+        IdlingRegistry.getInstance().register(idlingResource);
     }
 
     @Test
-    public void toolbarTest(){
+    public void toolbarTest() {
         onView(withId(R.id.tb_toolbar)).check(matches(isDisplayed()));
-        onView(withText(mActivityRule.getActivity().getString(R.string.baking_time)));
+        onView(withText(activityRule.getActivity().getString(R.string.baking_time)))
+                .check(matches(withParent(withId(R.id.tb_toolbar))));
     }
 
-    @Test
-    public void checkResultRecyclerIsDisplay() {
-        onView(withId(R.id.rv_fragment_recipes_list)).check(matches(isDisplayed()));
-    }
+
 
     @Test
     public void clickRecipe_LaunchDetailActivity() {
-        onView(withText(RECIPE_ITEM_BROWNIE)).perform(click());
+        onView(withId(R.id.rv_fragment_recipes_list))
+                .check(matches(isDisplayed()))
+                .perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
         intended(hasComponent(RecipeActivity.class.getName()));
         intended(hasExtraWithKey(
-                mActivityRule.getActivity().getResources().getString(R.string.recipe_key)));
+                activityRule.getActivity().getResources().getString(R.string.recipe_key)));
     }
 
     @After
     public void unregisterIdlingResource() {
-        if (mIdlingResource != null) {
-            IdlingRegistry.getInstance().unregister(mIdlingResource);
+        if (idlingResource != null) {
+            IdlingRegistry.getInstance().unregister(idlingResource);
         }
     }
 
